@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SANI-AGRO - Formulaire d'Achat Professionnel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            background: #eaf3ed; 
+            margin: 0; 
+            padding: 40px 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            box-sizing: border-box;
+            background-image: radial-gradient(ellipse at 10% 20%, rgba(43, 140, 94, 0.04) 0%, transparent 50%),
+                              radial-gradient(ellipse at 90% 80%, rgba(43, 140, 94, 0.03) 0%, transparent 50%);
+        }
+
+        .container-checkout {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 28px;
+            box-shadow: 0 20px 60px -12px rgba(15, 42, 26, 0.15);
+            width: 1020px;
+            max-width: 100%;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            min-height: 560px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== PANNEAU GAUCHE ===== */
+        .left-preview-panel {
+            position: relative;
+            background: linear-gradient(135deg, #eef6f1, #d9eee0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid rgba(76, 175, 132, 0.08);
+            height: 100%;
+            min-height: 480px;
+            overflow: hidden;
+        }
+
+        .left-preview-panel::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(15, 42, 26, 0.12), transparent);
+            pointer-events: none;
+            border-radius: 0 0 0 28px;
+        }
+
+        .product-main-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.5s ease;
+        }
+
+        .container-checkout:hover .product-main-img { transform: scale(1.02); }
+
+        .product-fallback-img {
+            text-align: center;
+            color: #9abbab;
+            padding: 40px;
+            z-index: 1;
+            background: rgba(238, 246, 241, 0.5);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-fallback-img i { font-size: 60px; color: #c5e0d0; margin-bottom: 12px; }
+        .product-fallback-img p { margin: 0; font-size: 14px; font-weight: 500; color: #8aaa9a; }
+
+        /* Badge */
+        .product-badge {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a7a4a;
+            border: 1px solid rgba(43, 140, 94, 0.1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .product-badge i { color: #2b8c5e; }
+
+        /* ===== PANNEAU DROIT ===== */
+        .right-form-panel {
+            padding: 40px 44px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .header-section {
+            margin-bottom: 18px;
+            border-bottom: 2px solid rgba(43, 140, 94, 0.06);
+            padding-bottom: 16px;
+            position: relative;
+        }
+        .header-section h1 { margin: 0; font-size: 24px; font-weight: 800; color: #0f2a1a; letter-spacing: -0.3px; }
+
+        .btn-back-market {
+            position: absolute;
+            top: -2px;
+            right: 0;
+            font-size: 13px;
+            color: #2b8c5e;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 40px;
+            background: rgba(43, 140, 94, 0.06);
+            transition: all 0.25s ease;
+        }
+        .btn-back-market:hover {
+            background: #2b8c5e;
+            color: white;
+            transform: translateX(-4px);
+            box-shadow: 0 4px 12px rgba(43, 140, 94, 0.2);
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #4f6b6b;
+            margin-bottom: 10px;
+            padding: 4px 0;
+        }
+        .meta-row i { width: 18px; text-align: center; font-size: 15px; }
+        .meta-row i.fa-user-wheat { color: #b89a6a; }
+        .meta-row i.fa-map-location-dot { color: #4a8a9a; }
+        .meta-row i.fa-boxes-stacked { color: #5a7a6a; }
+        .meta-row i.fa-calendar { color: #b07c7c; }
+        .meta-row strong { color: #0f2a1a; font-weight: 600; }
+
+        .meta-row .stock-badge {
+            background: rgba(43, 140, 94, 0.06);
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a7a4a;
+        }
+        .meta-row .stock-badge.low { background: rgba(176, 69, 69, 0.06); color: #b04545; }
+
+        .price-tag-big {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a7a4a;
+            margin: 14px 0 18px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .price-tag-big span { font-size: 14px; color: #6a8a7a; font-weight: 400; }
+
+        .input-qty-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(76, 175, 132, 0.15);
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            outline: none;
+            background: rgba(255, 255, 255, 0.5);
+            color: #1a3a2a;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .input-qty-control:focus {
+            border-color: #2b8c5e;
+            box-shadow: 0 0 0 4px rgba(43, 140, 94, 0.06);
+            background: white;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(76, 175, 132, 0.15);
+            border-radius: 14px;
+            padding: 2px;
+            transition: all 0.3s ease;
+        }
+        .input-group:focus-within {
+            border-color: #2b8c5e;
+            box-shadow: 0 0 0 4px rgba(43, 140, 94, 0.06);
+        }
+        .input-group .qty-btn {
+            padding: 12px 18px;
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            color: #5a7a6a;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .input-group .qty-btn:hover { background: rgba(43, 140, 94, 0.06); color: #1a7a4a; }
+        .input-group .input-qty-control {
+            border: none;
+            text-align: center;
+            padding: 12px 0;
+            background: transparent;
+            border-radius: 0;
+            width: 80px;
+            flex: 1;
+        }
+        .input-group .input-qty-control:focus { box-shadow: none; }
+
+        .live-pricing-box {
+            background: rgba(43, 140, 94, 0.04);
+            border: 1px solid rgba(76, 175, 132, 0.08);
+            padding: 16px 22px;
+            border-radius: 14px;
+            margin: 20px 0 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .live-pricing-box span { font-size: 14px; font-weight: 500; color: #3d5e4e; display: flex; align-items: center; gap: 10px; }
+        .live-pricing-box span i { color: #2b8c5e; }
+        .live-pricing-box strong { font-size: 22px; font-weight: 800; color: #1a7a4a; }
+
+        .btn-submit-order {
+            background: linear-gradient(135deg, #2b8c5e, #1f724b);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 60px;
+            font-size: 15px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 20px rgba(43, 140, 94, 0.2);
+            letter-spacing: 0.2px;
+        }
+        .btn-submit-order:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(43, 140, 94, 0.3);
+        }
+        .btn-submit-order:active { transform: scale(0.98); }
+
+        @media (max-width: 820px) {
+            .container-checkout { grid-template-columns: 1fr; border-radius: 24px; min-height: auto; }
+            .left-preview-panel { min-height: 280px; border-right: none; border-bottom: 1px solid rgba(76, 175, 132, 0.08); border-radius: 24px 24px 0 0; }
+            .left-preview-panel::after { border-radius: 0; }
+            .right-form-panel { padding: 30px 28px 36px; }
+            .price-tag-big { font-size: 24px; }
+            .product-badge { top: 16px; left: 16px; font-size: 11px; padding: 6px 14px; }
+            .live-pricing-box { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .live-pricing-box strong { font-size: 20px; }
+        }
+        @media (max-width: 480px) {
+            body { padding: 16px 12px; }
+            .right-form-panel { padding: 24px 18px 30px; }
+            .header-section h1 { font-size: 20px; }
+            .btn-back-market { position: relative; margin-top: 10px; display: inline-flex; width: fit-content; }
+            .meta-row { font-size: 13px; flex-wrap: wrap; }
+            .price-tag-big { font-size: 22px; }
+            .input-group .input-qty-control { font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-checkout">
+        <!-- PANEL GAUCHE -->
+        <div class="left-preview-panel">
+            <span class="product-badge">
+                <i class="fa-regular fa-circle-check"></i> Produit certifié
+            </span>
+            {% if produit.image_produit %}
+                <img src="{{ produit.image_produit.url }}" class="product-main-img" alt="Denrée">
+            {% else %}
+                <div class="product-fallback-img">
+                    <i class="fa-regular fa-seedling"></i>
+                    <p>Aucun visuel disponible</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- PANEL DROIT -->
+        <div class="right-form-panel">
+            <div class="header-section">
+                <a href="{% url 'marche_public' %}" class="btn-back-market">
+                    <i class="fa-solid fa-arrow-left"></i> Retour au marché
+                </a>
+                <h1>{{ produit.nom_produit }}</h1>
+            </div>
+
+            <div class="meta-row">
+                <i class="fa-regular fa-user-wheat"></i>
+                <span>Producteur : <strong>{{ produit.producteur.nom|default:produit.producteur }}</strong></span>
+            </div>
+            <div class="meta-row">
+                <i class="fa-regular fa-map-location-dot"></i>
+                <span>Zone : <strong>{{ produit.zone_production|capfirst }}</strong></span>
+            </div>
+            <div class="meta-row">
+                <i class="fa-regular fa-boxes-stacked"></i>
+                <span>Stock : <strong>{{ produit.quantite_dispo }} kg</strong>
+                    {% if produit.quantite_dispo > 100 %}
+                        <span class="stock-badge"><i class="fa-regular fa-circle-check"></i> Frais</span>
+                    {% elif produit.quantite_dispo <= 50 and produit.quantite_dispo > 0 %}
+                        <span class="stock-badge low"><i class="fa-regular fa-clock"></i> Derniers kg</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="meta-row" style="color:#7a5a5a;">
+                <i class="fa-regular fa-calendar"></i>
+                <span>Disponible jusqu'au : <strong>{{ produit.date_disponibilite|date:"d/m/Y" }}</strong></span>
+            </div>
+
+            <div class="price-tag-big">
+                <span id="unit-price">{{ produit.prix_unitaire }}</span> FCFA <span>/ kg</span>
+            </div>
+
+            <form method="POST" action="{% url 'passer_commande' %}">
+                {% csrf_token %}
+                <input type="hidden" name="produit_id" value="{{ produit.id }}">
+
+                <div style="margin-bottom:14px;">
+                    <label style="font-size:12px; font-weight:600; color:#4f6b6b; display:block; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">
+                        <i class="fa-regular fa-weight-scale"></i> Quantité (kg)
+                    </label>
+                    <div class="input-group">
+                        <button type="button" class="qty-btn" onclick="ajusterQuantite(-1)">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <input type="number" name="quantite_achat" id="quantite_achat" min="1" max="{{ produit.quantite_dispo }}" value="1" class="input-qty-control" oninput="recalculerTotalFret()" required>
+                        <button type="button" class="qty-btn" onclick="ajusterQuantite(1)">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <div style="margin-top:6px; font-size:12px; color:#7a9a8a; display:flex; justify-content:space-between;">
+                        <span><i class="fa-regular fa-circle"></i> Min : 1 kg</span>
+                        <span><i class="fa-regular fa-circle"></i> Max : {{ produit.quantite_dispo }} kg</span>
+                    </div>
+                </div>
+
+                <div class="live-pricing-box">
+                    <span><i class="fa-solid fa-calculator"></i> Montant total</span>
+                    <strong><span id="total-price">{{ produit.prix_unitaire }}</span> FCFA</strong>
+                </div>
+
+                <button type="submit" class="btn-submit-order">
+                    <i class="fa-regular fa-paper-plane"></i> Envoyer la commande
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function recalculerTotalFret() {
+            var pu = parseFloat(document.getElementById('unit-price').innerText) || 0;
+            var qty = parseFloat(document.getElementById('quantite_achat').value) || 0;
+            var stockMax = parseFloat("{{ produit.quantite_dispo }}") || 0;
+            if (qty > stockMax) { qty = stockMax; document.getElementById('quantite_achat').value = stockMax; }
+            if (qty < 1 || isNaN(qty)) { qty = 1; document.getElementById('quantite_achat').value = 1; }
+            document.getElementById('total-price').innerText = (pu * qty).toLocaleString('fr-FR');
+        }
+        function ajusterQuantite(delta) {
+            var input = document.getElementById('quantite_achat');
+            var current = parseInt(input.value) || 1;
+            var stockMax = parseInt("{{ produit.quantite_dispo }}") || 1;
+            input.value = Math.min(Math.max(current + delta, 1), stockMax);
+            recalculerTotalFret();
+        }
+        document.addEventListener('DOMContentLoaded', recalculerTotalFret);
+    </script>
+</body>
+</html>

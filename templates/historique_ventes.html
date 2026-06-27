@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SANI-AGRO - Historique Ventes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #e8f3ec;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ⬅️ SIDEBAR – VERT FONCÉ PROFESSIONNEL */
+        .sidebar {
+            width: 280px;
+            background: #0f2a1a;
+            color: #e8f3ec;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 28px;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-brand {
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: #4caf84;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sidebar-brand i {
+            color: #4caf84;
+            font-size: 26px;
+            background: rgba(76, 175, 132, 0.15);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 16px 12px;
+            margin: 0;
+        }
+
+        .sidebar-item {
+            margin-bottom: 2px;
+        }
+
+        .sidebar-item a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 20px;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-item a i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-item a:hover {
+            background: rgba(76, 175, 132, 0.12);
+            color: #ffffff;
+            border-left-color: #4caf84;
+            transform: translateX(4px);
+        }
+
+        .sidebar-item a:hover i {
+            color: #4caf84;
+        }
+
+        .sidebar-item.active a {
+            background: rgba(76, 175, 132, 0.15);
+            color: #ffffff;
+            border-left-color: #4caf84;
+            font-weight: 600;
+        }
+
+        .sidebar-item.active a i {
+            color: #4caf84;
+        }
+
+        .sidebar-item:last-child {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 15px;
+        }
+
+        .sidebar-item:last-child a {
+            color: rgba(255, 150, 150, 0.6);
+        }
+
+        .sidebar-item:last-child a i {
+            color: rgba(255, 150, 150, 0.4);
+        }
+
+        .sidebar-item:last-child a:hover {
+            background: rgba(255, 80, 80, 0.1);
+            color: #ff8a8a;
+            border-left-color: #ff6b6b;
+        }
+
+        .sidebar-item:last-child a:hover i {
+            color: #ff6b6b;
+        }
+
+        /* ➡️ CONTENU PRINCIPAL */
+        .main-content {
+            margin-left: 280px;
+            padding: 32px 40px 60px;
+            width: calc(100% - 280px);
+            box-sizing: border-box;
+            background: #e8f3ec;
+            min-height: 100vh;
+        }
+
+        /* 🎯 EN-TÊTE */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f2a1a;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header h1 i {
+            color: #2b8c5e;
+            background: #e6f5ee;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 22px;
+        }
+
+        .page-header .stats-mini {
+            display: flex;
+            gap: 20px;
+            background: #ffffff;
+            padding: 10px 22px;
+            border-radius: 60px;
+            border: 1px solid rgba(76, 175, 132, 0.12);
+            box-shadow: 0 2px 10px rgba(0, 40, 20, 0.04);
+        }
+
+        .page-header .stats-mini span {
+            font-size: 13px;
+            font-weight: 500;
+            color: #3d5e4e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-header .stats-mini span i {
+            color: #2b8c5e;
+        }
+
+        .page-header .stats-mini .val {
+            font-weight: 700;
+            color: #1a3a2a;
+            background: #e6f5ee;
+            padding: 0 10px;
+            border-radius: 20px;
+        }
+
+        /* 📋 CARTE */
+        .card {
+            background: #ffffff;
+            padding: 28px 30px 30px;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(15, 42, 26, 0.05);
+            border: 1px solid rgba(76, 175, 132, 0.10);
+            animation: fadeUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f2a1a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header h3 i {
+            color: #2b8c5e;
+        }
+
+        .card-header .filter-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 6px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(76, 175, 132, 0.2);
+            background: white;
+            font-size: 12px;
+            font-weight: 500;
+            color: #3d5e4e;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-btn:hover {
+            background: #e6f5ee;
+            border-color: #2b8c5e;
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: #2b8c5e;
+            color: white;
+            border-color: #2b8c5e;
+            box-shadow: 0 4px 12px rgba(43, 140, 94, 0.2);
+        }
+
+        /* 📋 TABLEAU */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            padding: 14px 12px;
+            color: #3d5e4e;
+            background: #eef6f1;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #d9eee0;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #eaf3ed;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f6faf8;
+        }
+
+        /* 🏷️ BADGES DE STATUT */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-status.paid {
+            background: #e3f3e9;
+            color: #1a7a4a;
+            border: 1px solid rgba(43, 140, 94, 0.15);
+        }
+
+        .badge-status.cancelled {
+            background: #fdecea;
+            color: #b04545;
+            border: 1px solid rgba(176, 124, 124, 0.15);
+        }
+
+        .badge-status.pending {
+            background: #f5f0e3;
+            color: #8a7a4a;
+            border: 1px solid rgba(184, 154, 106, 0.15);
+        }
+
+        .badge-status.shipped {
+            background: #e1f0f2;
+            color: #2d6b73;
+            border: 1px solid rgba(59, 140, 158, 0.15);
+        }
+
+        .badge-status i {
+            font-size: 12px;
+        }
+
+        /* 📱 RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+                width: calc(100% - 240px);
+                padding: 24px 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+                padding-top: 16px;
+            }
+            .sidebar-brand {
+                font-size: 0;
+                padding: 0 0 16px;
+            }
+            .sidebar-brand i {
+                font-size: 22px;
+                padding: 10px;
+            }
+            .sidebar-item a {
+                padding: 12px 16px;
+                justify-content: center;
+            }
+            .sidebar-item a span {
+                display: none;
+            }
+            .sidebar-item a i {
+                font-size: 18px;
+                margin: 0;
+            }
+            .main-content {
+                margin-left: 60px;
+                width: calc(100% - 60px);
+                padding: 16px;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .page-header h1 {
+                font-size: 20px;
+            }
+            .page-header h1 i {
+                padding: 8px;
+                font-size: 18px;
+            }
+            .page-header .stats-mini {
+                padding: 6px 14px;
+                flex-wrap: wrap;
+                gap: 6px 14px;
+            }
+            .page-header .stats-mini span {
+                font-size: 12px;
+            }
+            .card {
+                padding: 20px 16px;
+            }
+            .card-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .card-header .filter-group {
+                flex-wrap: wrap;
+            }
+            .filter-btn {
+                font-size: 11px;
+                padding: 4px 12px;
+            }
+            table {
+                font-size: 13px;
+            }
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px 10px;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            table {
+                font-size: 11px;
+            }
+            th, td {
+                padding: 8px 4px;
+            }
+            .badge-status {
+                font-size: 10px;
+                padding: 3px 10px;
+            }
+            .filter-btn {
+                font-size: 10px;
+                padding: 3px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ⬅️ SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-leaf"></i>
+            <span>SANI-AGRO</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="{% url 'dashboard_producteur' %}">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Tableau de bord</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="{% url 'mes_stocks' %}">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span>Mes Stocks</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="{% url 'commandes_recues' %}">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Commandes reçues</span>
+                </a>
+            </li>
+            <li class="sidebar-item active">
+                <a href="#">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Historique</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ➡️ CONTENU PRINCIPAL -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1>
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Historique des ventes
+            </h1>
+            <div class="stats-mini">
+                <span>
+                    <i class="fa-regular fa-receipt"></i>
+                    Total : <span class="val">{{ mes_commandes|length }}</span>
+                </span>
+                <span>
+                    <i class="fa-regular fa-circle-check"></i>
+                    Encaissées : <span class="val">
+                        {% with paid=0 %}
+                            {% for c in mes_commandes %}
+                                {% if c.statut_reservation.upper == 'PAYEE' %}
+                                    {% with paid=paid|add:1 %}{% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ paid }}
+                        {% endwith %}
+                    </span>
+                </span>
+                <span>
+                    <i class="fa-regular fa-clock"></i>
+                    En attente : <span class="val">
+                        {% with pending=0 %}
+                            {% for c in mes_commandes %}
+                                {% if c.statut_reservation.upper != 'PAYEE' and c.statut_reservation.upper != 'ANNULEE' %}
+                                    {% with pending=pending|add:1 %}{% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ pending }}
+                        {% endwith %}
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    <i class="fa-solid fa-history"></i>
+                    Archives de toutes les réservations commerciales
+                </h3>
+                <div class="filter-group">
+                    <button class="filter-btn active" onclick="filtrerHistorique('tous', this)">Tous</button>
+                    <button class="filter-btn" onclick="filtrerHistorique('PAYEE', this)">Encaissées</button>
+                    <button class="filter-btn" onclick="filtrerHistorique('ANNULEE', this)">Expirées</button>
+                    <button class="filter-btn" onclick="filtrerHistorique('autre', this)">Autres</button>
+                </div>
+            </div>
+
+            <table id="historiqueTable">
+                <thead>
+                    <tr>
+                        <th>Date de l'achat</th>
+                        <th>Acheteur</th>
+                        <th>Culture vendue</th>
+                        <th>Quantité</th>
+                        <th>Statut comptable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in mes_commandes %}
+                    <tr class="historique-row" data-status="{{ c.statut_reservation.upper }}">
+                        <td>{{ c.date_reservation|date:"d/m/Y à H:i" }}</td>
+                        <td><strong>{{ c.commercant.profil.nom|capfirst }}</strong></td>
+                        <td><b>{{ c.flux_produit.produit.nom_produit }}</b></td>
+                        <td>{{ c.flux_produit.quantite }} kg</td>
+                        <td>
+                            {% if c.statut_reservation.upper == 'PAYEE' %}
+                                <span class="badge-status paid">
+                                    <i class="fa-regular fa-circle-check"></i> Encaissée
+                                </span>
+                            {% elif c.statut_reservation.upper == 'ANNULEE' %}
+                                <span class="badge-status cancelled">
+                                    <i class="fa-regular fa-circle-xmark"></i> Expirée (4h)
+                                </span>
+                            {% elif c.statut_reservation.upper == 'VALIDEE' %}
+                                <span class="badge-status shipped">
+                                    <i class="fa-regular fa-truck"></i> Validée
+                                </span>
+                            {% else %}
+                                <span class="badge-status pending">
+                                    <i class="fa-regular fa-clock"></i> {{ c.statut_reservation }}
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align:center; color:#7a9a8a; padding: 40px;">
+                            <i class="fa-regular fa-box-open" style="font-size: 32px; display:block; margin-bottom: 10px; color:#9abbab;"></i>
+                            Aucune archive commerciale enregistrée.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function filtrerHistorique(filtre, btn) {
+            // Mettre à jour les boutons
+            var btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+
+            var rows = document.querySelectorAll('.historique-row');
+            rows.forEach(function(row) {
+                var status = row.getAttribute('data-status');
+                if (filtre === 'tous') {
+                    row.style.display = '';
+                } else if (filtre === 'autre') {
+                    if (status !== 'PAYEE' && status !== 'ANNULEE') {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } else {
+                    if (status === filtre) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

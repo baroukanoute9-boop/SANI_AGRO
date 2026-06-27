@@ -1,0 +1,998 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>SANI-AGRO - Espace Commerçant</title>
+  <!-- Styles externes -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* --- Reset & layout --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Inter', 'Segoe UI', sans-serif; 
+      background: #eaf3ed; 
+      color: #0f2a1a; 
+      display: flex; 
+      min-height: 100vh; 
+      background-image: radial-gradient(ellipse at 10% 20%, rgba(43, 140, 94, 0.04) 0%, transparent 50%),
+                        radial-gradient(ellipse at 90% 80%, rgba(43, 140, 94, 0.03) 0%, transparent 50%);
+    }
+
+    /* ===== SIDEBAR – LUXE ===== */
+    .sidebar { 
+      width: 280px; 
+      background: linear-gradient(180deg, #0a1f14 0%, #0f2a1a 40%, #1a3a2a 100%);
+      color: #e8f3ec; 
+      height: 100vh; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      padding-top: 28px; 
+      box-shadow: 4px 0 40px rgba(0, 0, 0, 0.25); 
+      z-index: 1000; 
+      border-right: 1px solid rgba(255, 255, 255, 0.04); 
+      overflow-y: auto;
+    }
+
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+    .sidebar::-webkit-scrollbar-thumb { background: rgba(76, 175, 132, 0.3); border-radius: 4px; }
+
+    .sidebar-brand { 
+      font-size: 22px; 
+      font-weight: 900; 
+      text-align: center; 
+      padding-bottom: 28px; 
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04); 
+      color: #4caf84; 
+      letter-spacing: -0.5px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 10px; 
+    }
+
+    .sidebar-brand i { 
+      color: #4caf84; 
+      font-size: 28px; 
+      background: rgba(76, 175, 132, 0.12); 
+      padding: 8px; 
+      border-radius: 14px; 
+      box-shadow: 0 0 30px rgba(76, 175, 132, 0.05);
+    }
+
+    .sidebar-menu { 
+      list-style: none; 
+      padding: 16px 12px; 
+      margin: 0; 
+    }
+
+    .sidebar-item { 
+      margin-bottom: 2px; 
+    }
+
+    .sidebar-item a { 
+      display: flex; 
+      align-items: center; 
+      gap: 14px; 
+      padding: 13px 20px; 
+      color: rgba(255, 255, 255, 0.55); 
+      text-decoration: none; 
+      font-weight: 500; 
+      font-size: 14px; 
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+      border-radius: 12px; 
+      border-left: 4px solid transparent; 
+      position: relative;
+    }
+
+    .sidebar-item a i { 
+      width: 22px; 
+      text-align: center; 
+      font-size: 16px; 
+      color: rgba(255, 255, 255, 0.3); 
+      transition: all 0.3s ease; 
+    }
+
+    .sidebar-item a:hover { 
+      background: rgba(76, 175, 132, 0.08); 
+      color: #ffffff; 
+      border-left-color: #4caf84; 
+      transform: translateX(6px); 
+    }
+
+    .sidebar-item a:hover i { 
+      color: #4caf84; 
+    }
+
+    .sidebar-item.active a { 
+      background: rgba(76, 175, 132, 0.1); 
+      color: #ffffff; 
+      border-left-color: #4caf84; 
+      font-weight: 600; 
+    }
+
+    .sidebar-item.active a i { 
+      color: #4caf84; 
+    }
+
+    .sidebar-item:last-child { 
+      margin-top: 30px; 
+      border-top: 1px solid rgba(255, 255, 255, 0.04); 
+      padding-top: 15px; 
+    }
+
+    .sidebar-item:last-child a { 
+      color: rgba(255, 150, 150, 0.5); 
+    }
+
+    .sidebar-item:last-child a i { 
+      color: rgba(255, 150, 150, 0.3); 
+    }
+
+    .sidebar-item:last-child a:hover { 
+      background: rgba(255, 80, 80, 0.08); 
+      color: #ff8a8a; 
+      border-left-color: #ff6b6b; 
+    }
+
+    .sidebar-item:last-child a:hover i { 
+      color: #ff6b6b; 
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content { 
+      margin-left: 280px; 
+      padding: 32px 40px 60px; 
+      width: calc(100% - 280px); 
+      box-sizing: border-box; 
+      min-height: 100vh; 
+    }
+
+    /* ===== USER BAR ===== */
+    .user-badge-bar { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px);
+      padding: 16px 28px; 
+      border-radius: 20px; 
+      box-shadow: 0 4px 30px rgba(15, 42, 26, 0.04); 
+      margin-bottom: 28px; 
+      border: 1px solid rgba(255, 255, 255, 0.3); 
+      flex-wrap: wrap; 
+      gap: 12px; 
+    }
+
+    .user-welcome { 
+      font-size: 15px; 
+      color: #1a3a2a; 
+    }
+
+    .user-welcome strong { 
+      color: #0f2a1a; 
+      font-weight: 700; 
+      background: linear-gradient(135deg, #0f2a1a, #1a4a2a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .user-role { 
+      font-weight: 600; 
+      color: #1f7a4a; 
+      background: rgba(43, 140, 94, 0.08); 
+      padding: 4px 16px; 
+      border-radius: 40px; 
+      font-size: 12px; 
+      margin-left: 8px; 
+      border: 1px solid rgba(43, 140, 94, 0.1); 
+    }
+
+    /* ===== MESSAGES ===== */
+    .alert {
+      padding: 14px 20px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      border-left: 5px solid #2b8c5e;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideDown 0.5s ease forwards;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .alert-success { border-left-color: #2b8c5e; }
+    .alert-error { border-left-color: #b04545; }
+    .alert-warning { border-left-color: #b89a6a; }
+    .alert-info { border-left-color: #3b8c9e; }
+
+    /* ===== KPIs ===== */
+    .kpi-container { 
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 20px; 
+      margin-bottom: 28px; 
+    }
+
+    .kpi-card { 
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(12px);
+      padding: 22px 20px; 
+      border-radius: 18px; 
+      box-shadow: 0 4px 30px rgba(15, 42, 26, 0.03); 
+      border-left: 5px solid #2b8c5e; 
+      border: 1px solid rgba(255, 255, 255, 0.2); 
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(43, 140, 94, 0.03), transparent 70%);
+      pointer-events: none;
+    }
+
+    .kpi-card:hover { 
+      transform: translateY(-6px); 
+      box-shadow: 0 12px 40px rgba(43, 140, 94, 0.08); 
+    }
+
+    .kpi-card.blue { border-left-color: #3b8c9e; }
+    .kpi-card.green { border-left-color: #2b8c5e; }
+    .kpi-card.purple { border-left-color: #7a9a8a; }
+    .kpi-card.amber { border-left-color: #b89a6a; }
+
+    .kpi-title { 
+      font-size: 11px; 
+      color: #5a7a6a; 
+      font-weight: 600; 
+      text-transform: uppercase; 
+      letter-spacing: 0.8px; 
+    }
+
+    .kpi-value { 
+      font-size: 28px; 
+      font-weight: 800; 
+      margin-top: 6px; 
+      color: #0f2a1a; 
+    }
+
+    .kpi-value small {
+      font-size: 14px;
+      font-weight: 400;
+      color: #5a7a6a;
+    }
+
+    /* ===== GRID & CARDS ===== */
+    .main-grid { 
+      display: grid; 
+      grid-template-columns: 1.1fr 0.9fr; 
+      gap: 28px; 
+    }
+
+    .card { 
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(12px);
+      padding: 24px 26px 28px; 
+      border-radius: 20px; 
+      box-shadow: 0 4px 30px rgba(15, 42, 26, 0.03); 
+      border: 1px solid rgba(255, 255, 255, 0.2); 
+      margin-bottom: 28px; 
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #2b8c5e, #4caf84, #2b8c5e);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .card:hover { 
+      box-shadow: 0 8px 40px rgba(15, 42, 26, 0.06); 
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.03), transparent 60%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .card:hover::after { opacity: 1; }
+
+    h3 { 
+      margin-top: 0; 
+      border-bottom: 2px solid rgba(43, 140, 94, 0.06); 
+      padding-bottom: 14px; 
+      font-size: 16px; 
+      font-weight: 700; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      color: #0f2a1a; 
+      letter-spacing: -0.2px; 
+    }
+
+    h3 i { 
+      color: #2b8c5e; 
+      font-size: 18px; 
+    }
+
+    /* ===== TABLES ===== */
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      text-align: left; 
+      font-size: 14px; 
+    }
+
+    th { 
+      padding: 12px 10px; 
+      color: #3d5e4e; 
+      background: rgba(43, 140, 94, 0.04); 
+      font-size: 10px; 
+      font-weight: 700; 
+      text-transform: uppercase; 
+      letter-spacing: 0.8px; 
+      border-bottom: 2px solid rgba(43, 140, 94, 0.06); 
+    }
+
+    td { 
+      padding: 12px 10px; 
+      border-bottom: 1px solid rgba(43, 140, 94, 0.04); 
+      font-size: 14px; 
+      vertical-align: middle; 
+    }
+
+    tr:last-child td { 
+      border-bottom: none; 
+    }
+
+    tr:hover td { 
+      background: rgba(43, 140, 94, 0.02); 
+    }
+
+    /* ===== BOUTONS ===== */
+    .btn { 
+      padding: 7px 16px; 
+      border-radius: 40px; 
+      text-decoration: none; 
+      font-weight: 600; 
+      font-size: 12px; 
+      color: white; 
+      border: none; 
+      cursor: pointer; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+      font-family: 'Inter', sans-serif; 
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      transition: all 0.6s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    .btn:hover::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-blue { 
+      background: linear-gradient(135deg, #3b8c9e, #2d7a8a); 
+      box-shadow: 0 4px 16px rgba(59, 140, 158, 0.15); 
+    }
+
+    .btn-blue:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 8px 24px rgba(59, 140, 158, 0.25); 
+    }
+
+    .btn-green { 
+      background: linear-gradient(135deg, #2b8c5e, #1f724b); 
+      box-shadow: 0 4px 16px rgba(43, 140, 94, 0.15); 
+    }
+
+    .btn-green:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 8px 24px rgba(43, 140, 94, 0.25); 
+    }
+
+    .btn-red { 
+      background: linear-gradient(135deg, #b07c7c, #9a6767); 
+      box-shadow: 0 4px 16px rgba(176, 124, 124, 0.12); 
+    }
+
+    .btn-red:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 8px 24px rgba(176, 124, 124, 0.2); 
+    }
+
+    .btn-receipt { 
+      background: linear-gradient(135deg, #5a7a6a, #4a6a5a); 
+      box-shadow: 0 4px 16px rgba(90, 122, 106, 0.15); 
+    }
+
+    .btn-receipt:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 8px 24px rgba(90, 122, 106, 0.2); 
+    }
+
+    /* ===== BADGES ===== */
+    .badge-status { 
+      padding: 4px 14px; 
+      border-radius: 30px; 
+      font-weight: 600; 
+      font-size: 10px; 
+      display: inline-block; 
+      letter-spacing: 0.5px; 
+      text-transform: uppercase;
+    }
+
+    .badge-status.success { 
+      background: rgba(43, 140, 94, 0.08); 
+      color: #1a7a4a; 
+      border: 1px solid rgba(43, 140, 94, 0.08); 
+    }
+
+    .badge-status.warning { 
+      background: rgba(184, 154, 106, 0.08); 
+      color: #8a7a4a; 
+      border: 1px solid rgba(184, 154, 106, 0.08); 
+    }
+
+    .badge-status.info { 
+      background: rgba(59, 140, 158, 0.08); 
+      color: #2d6b73; 
+      border: 1px solid rgba(59, 140, 158, 0.08); 
+    }
+
+    .badge-status.danger { 
+      background: rgba(176, 69, 69, 0.08); 
+      color: #b04545; 
+      border: 1px solid rgba(176, 69, 69, 0.08); 
+    }
+
+    /* ===== MAP ===== */
+    #map { 
+      height: 440px; 
+      width: 100%; 
+      border-radius: 16px; 
+      border: 2px solid rgba(43, 140, 94, 0.06); 
+      box-shadow: 0 4px 30px rgba(15, 42, 26, 0.03); 
+      overflow: hidden;
+    }
+
+    .leaflet-control-zoom { border: none !important; box-shadow: 0 4px 16px rgba(0,0,0,0.04) !important; }
+    .leaflet-control-zoom a { background: rgba(255,255,255,0.8) !important; backdrop-filter: blur(8px) !important; border: 1px solid rgba(43,140,94,0.04) !important; }
+
+    /* ===== INFO CARTE ===== */
+    .map-info {
+      margin-top: 12px; 
+      padding: 14px 16px; 
+      background: rgba(43, 140, 94, 0.04); 
+      border-radius: 14px; 
+      font-size: 13px;
+      border: 1px solid rgba(43, 140, 94, 0.06);
+    }
+    .map-info-grid {
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 8px;
+    }
+    .map-info-grid .label {
+      color: #5a7a6a;
+      font-weight: 500;
+    }
+    .map-info-grid .value {
+      font-weight: 600;
+      color: #0f2a1a;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .sidebar { width: 240px; }
+      .main-content { margin-left: 240px; width: calc(100% - 240px); padding: 24px 28px; }
+      .main-grid { grid-template-columns: 1fr; }
+      .kpi-container { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { 
+        width: 60px; 
+        padding-top: 16px; 
+      }
+      .sidebar-brand { 
+        font-size: 0; 
+        padding: 0 0 16px; 
+      }
+      .sidebar-brand i { 
+        font-size: 22px; 
+        padding: 10px; 
+      }
+      .sidebar-item a { 
+        padding: 12px 16px; 
+        justify-content: center; 
+      }
+      .sidebar-item a span { 
+        display: none; 
+      }
+      .sidebar-item a i { 
+        font-size: 18px; 
+        margin: 0; 
+      }
+      .main-content { 
+        margin-left: 60px; 
+        width: calc(100% - 60px); 
+        padding: 16px; 
+      }
+      .user-badge-bar { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 8px; 
+      }
+      .kpi-container { 
+        grid-template-columns: 1fr 1fr; 
+        gap: 12px; 
+      }
+      .kpi-value { 
+        font-size: 20px; 
+      }
+      .card { 
+        padding: 18px 16px; 
+      }
+      #map { 
+        height: 300px; 
+      }
+      table { 
+        font-size: 12px; 
+      }
+      th, td { 
+        padding: 8px 6px; 
+      }
+      .btn { 
+        font-size: 11px; 
+        padding: 5px 12px; 
+      }
+      .map-info-grid {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-content { 
+        padding: 12px 10px; 
+      }
+      .kpi-container { 
+        grid-template-columns: 1fr; 
+      }
+      .kpi-card { 
+        padding: 14px 16px; 
+      }
+      .kpi-value { 
+        font-size: 18px; 
+      }
+      .card { 
+        padding: 14px 12px; 
+        border-radius: 14px; 
+      }
+      table { 
+        font-size: 11px; 
+      }
+      th, td { 
+        padding: 6px 4px; 
+      }
+      #map { 
+        height: 240px; 
+      }
+      .user-badge-bar { 
+        padding: 12px 14px; 
+      }
+      .user-welcome { 
+        font-size: 13px; 
+      }
+      .btn { 
+        font-size: 10px; 
+        padding: 4px 10px; 
+      }
+      h3 { 
+        font-size: 14px; 
+      }
+      .badge-status { 
+        font-size: 9px; 
+        padding: 2px 10px; 
+      }
+      .map-info {
+        font-size: 12px;
+        padding: 10px 12px;
+      }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .kpi-card, .card {
+      animation: fadeUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .kpi-card:nth-child(1) { animation-delay: 0.05s; }
+    .kpi-card:nth-child(2) { animation-delay: 0.10s; }
+    .kpi-card:nth-child(3) { animation-delay: 0.15s; }
+    .kpi-card:nth-child(4) { animation-delay: 0.20s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-brand"><i class="fa-solid fa-leaf"></i> SANI-AGRO</div>
+  <ul class="sidebar-menu">
+    <li class="sidebar-item active"><a href="{% url 'dashboard_commercant' %}"><i class="fa-solid fa-chart-pie"></i> <span>Tableau de bord</span></a></li>
+    <li class="sidebar-item"><a href="{% url 'marche_public' %}"><i class="fa-solid fa-shop"></i> <span>Passer commande</span></a></li>
+    <li class="sidebar-item"><a href="{% url 'index' %}"><i class="fa-solid fa-house"></i> <span>Accueil</span></a></li>
+    <li class="sidebar-item"><a href="{% url 'user_logout' %}"><i class="fa-solid fa-right-from-bracket"></i> <span>Déconnexion</span></a></li>
+  </ul>
+</div>
+
+<!-- Main content -->
+<div class="main-content">
+
+<!-- ✅ Messages Django -->
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}warning{% else %}info-circle{% endif %}"></i>
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<!-- User bar -->
+<div class="user-badge-bar">
+  <div class="user-welcome">
+    <i class="fa-regular fa-store" style="color:#2b8c5e;"></i>
+    Espace Client : <strong>{{ user.username|capfirst }}</strong>
+    <span class="user-role"><i class="fa-regular fa-circle-check"></i> Commerçant Acheteur</span>
+  </div>
+</div>
+
+<!-- ✅ KPIs -->
+<div class="kpi-container">
+  <div class="kpi-card">
+    <div class="kpi-title"><i class="fa-regular fa-clock"></i> Commandes en attente</div>
+    <div class="kpi-value">{{ attente_count|default:0 }}</div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-title"><i class="fa-regular fa-credit-card"></i> Paiements requis</div>
+    <div class="kpi-value">{{ paiement_count|default:0 }}</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-title"><i class="fa-regular fa-truck"></i> Offres de transport</div>
+    <div class="kpi-value">{{ offres_transport_count|default:0 }}</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-title"><i class="fa-regular fa-money-bill-1"></i> Total Dépenses</div>
+    <div class="kpi-value">{{ total_depenses|floatformat:0|default:0 }} <small>FCFA</small></div>
+  </div>
+</div>
+
+<!-- Main grid -->
+<div class="main-grid">
+  <div class="left-column">
+
+    <!-- ✅ Offres de transport reçues -->
+    <div class="card">
+      <h3><i class="fa-regular fa-hand-holding-dollar"></i> Offres de transporteurs reçues</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Chauffeur / Véhicule</th>
+            <th>Téléphone</th>
+            <th>Prix proposé</th>
+            <th>Décision</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cmd in offres_transport %}
+            <tr>
+              <td>
+                <strong>{{ cmd.nom_chauffeur|default:"En attente" }}</strong>
+                <br><small style="color:#4f6b6b;"><i class="fa-regular fa-truck"></i> {{ cmd.type_vehicule|default:"N/A" }}</small>
+              </td>
+              <td><i class="fa-regular fa-phone"></i> {{ cmd.telephone_chauffeur|default:"N/A" }}</td>
+              <td style="color:#1f7a4a; font-weight:bold;">
+                <i class="fa-regular fa-coins"></i> {{ cmd.prix_transport_propose|default:"0"|floatformat:0 }} FCFA
+              </td>
+              <td>
+                <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                  <a href="{% url 'decider_offre_transport' cmd.id 'accepter' %}" class="btn btn-green">
+                    <i class="fa-regular fa-check"></i> Accepter
+                  </a>
+                  <a href="{% url 'decider_offre_transport' cmd.id 'refuser' %}" class="btn btn-red">
+                    <i class="fa-regular fa-xmark"></i> Refuser
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4" style="color:#7a9a8a; text-align:center; padding:20px;">
+                <i class="fa-regular fa-circle-info"></i> Aucune offre de transport pour le moment.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ✅ Suivi des commandes -->
+    <div class="card">
+      <h3><i class="fa-regular fa-basket-shopping"></i> Suivi de vos approvisionnements</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>État</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cmd in mes_commandes %}
+            <tr>
+              <td><b>{{ cmd.fluxproduit.produit.nom_produit }}</b></td>
+              <td><strong>{{ cmd.fluxproduit.quantite }} {{ cmd.fluxproduit.produit.unite_mesure }}</strong></td>
+              <td>
+                {% if cmd.statut_reservation == 'EN_ATTENTE' %}
+                  <span class="badge-status warning"><i class="fa-regular fa-clock"></i> En attente</span>
+                {% elif cmd.statut_reservation == 'VALIDÉE' %}
+                  <span class="badge-status warning"><i class="fa-regular fa-check"></i> Validée</span>
+                {% elif cmd.statut_reservation == 'PAYEE' %}
+                  <span class="badge-status success"><i class="fa-regular fa-credit-card"></i> Payée</span>
+                {% elif cmd.statut_reservation == 'PROPOSITION_TRANSPORT' %}
+                  <span class="badge-status info"><i class="fa-regular fa-truck"></i> Offre reçue</span>
+                {% elif cmd.statut_reservation == 'ACCEPTÉE' %}
+                  <span class="badge-status info"><i class="fa-regular fa-check-circle"></i> Acceptée</span>
+                {% elif cmd.statut_reservation == 'CHARGEE' %}
+                  <span class="badge-status info"><i class="fa-regular fa-box"></i> Chargée</span>
+                {% elif cmd.statut_reservation == 'EN_TRANSIT' %}
+                  <span class="badge-status info"><i class="fa-regular fa-truck-fast"></i> En transit</span>
+                {% elif cmd.statut_reservation == 'LIVREE' %}
+                  <span class="badge-status success"><i class="fa-regular fa-flag-checkered"></i> Livrée</span>
+                {% elif cmd.statut_reservation == 'REFUSÉE' %}
+                  <span class="badge-status danger"><i class="fa-regular fa-circle-xmark"></i> Refusée</span>
+                {% elif cmd.statut_reservation == 'ANNULÉE' %}
+                  <span class="badge-status danger"><i class="fa-regular fa-ban"></i> Annulée</span>
+                {% else %}
+                  <span class="badge-status info">{{ cmd.statut_reservation }}</span>
+                {% endif %}
+              </td>
+              <td>
+                <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                  {% if cmd.statut_reservation == 'VALIDÉE' %}
+                    <a href="{% url 'zone_paiement' cmd.id %}" class="btn btn-blue">
+                      <i class="fa-regular fa-wallet"></i> Payer
+                    </a>
+                  {% endif %}
+                  
+                  {% if cmd.statut_reservation == 'PAYEE' %}
+                    <a href="{% url 'recu_paiement' cmd.id %}" class="btn btn-receipt">
+                      <i class="fa-regular fa-file-lines"></i> Reçu
+                    </a>
+                  {% endif %}
+                  
+                  {% if cmd.statut_reservation in 'CHARGEE EN_TRANSIT ACCEPTÉE LIVREE' %}
+                    <a href="{% url 'recu_paiement' cmd.id %}" class="btn btn-receipt">
+                      <i class="fa-regular fa-file-lines"></i> Reçu
+                    </a>
+                  {% endif %}
+
+                  {% if cmd.statut_reservation not in 'ANNULÉE LIVREE PAYEE REFUSÉE' %}
+                    <a href="{% url 'annuler_commande' cmd.id %}" class="btn btn-red" 
+                       onclick="return confirm('Annuler cette commande ?')">
+                      <i class="fa-regular fa-ban"></i> Annuler
+                    </a>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4" style="color:#7a9a8a; text-align:center; padding:20px;">
+                <i class="fa-regular fa-bag-shopping"></i> Aucune commande trouvée.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Right column - Carte -->
+  <div class="right-column">
+    <div class="card">
+      <h3><i class="fa-regular fa-earth-africa"></i> Traçabilité Chauffeur</h3>
+      <div id="map"></div>
+      {% if carte_data %}
+        <div class="map-info">
+          <div class="map-info-grid">
+            <div><span class="label"><i class="fa-regular fa-truck"></i> Chauffeur :</span></div>
+            <div class="value">{{ carte_data.chauffeur }}</div>
+            <div><span class="label"><i class="fa-regular fa-phone"></i> Tél :</span></div>
+            <div class="value">{{ carte_data.telephone }}</div>
+            <div><span class="label"><i class="fa-regular fa-location-dot"></i> Départ :</span></div>
+            <div class="value">{{ carte_data.depart }}</div>
+            <div><span class="label"><i class="fa-regular fa-flag"></i> Arrivée :</span></div>
+            <div class="value">{{ carte_data.arrivee }}</div>
+            <div><span class="label"><i class="fa-regular fa-signal"></i> Statut :</span></div>
+            <div class="value">
+              {% if carte_data.statut == 'EN_TRANSIT' %}
+                <span style="color:#3b8c9e;"><i class="fa-regular fa-truck-fast"></i> En transit</span>
+              {% elif carte_data.statut == 'CHARGEE' %}
+                <span style="color:#b89a6a;"><i class="fa-regular fa-box"></i> Chargée</span>
+              {% elif carte_data.statut == 'LIVREE' %}
+                <span style="color:#1f7a4a;"><i class="fa-regular fa-circle-check"></i> Livrée</span>
+              {% else %}
+                <span style="color:#5a7a6a;"><i class="fa-regular fa-clock"></i> {{ carte_data.statut }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div style="margin-top:12px; padding:14px 16px; background:rgba(43,140,94,0.04); border-radius:14px; text-align:center; color:#7a9a8a; border:1px solid rgba(43,140,94,0.06);">
+          <i class="fa-regular fa-truck" style="font-size:24px; display:block; margin-bottom:6px; opacity:0.5;"></i>
+          Aucune livraison en cours
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // ✅ Initialisation de la carte
+  var mapClient = L.map('map', {
+    zoomControl: true,
+    attributionControl: false
+  }).setView([12.639, -8.002], 6);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+    attribution: '© OpenStreetMap' 
+  }).addTo(mapClient);
+
+  // ✅ Coordonnées GPS des communes
+  const GPS_COMMUNES = {
+    'Bamako': [12.639, -8.002],
+    'Sikasso': [11.316, -5.666],
+    'Ségou': [13.432, -6.266],
+    'Mopti': [14.484, -4.183],
+    'Koulikoro': [12.863, -7.556],
+    'Kati': [12.744, -8.071],
+    'Kayes': [14.447, -11.436],
+    'Koutiala': [12.392, -5.464],
+    'San': [13.300, -4.900],
+    'Bougouni': [11.417, -7.483],
+    'Niono': [14.250, -5.983],
+    'Marché de Destination': [11.316, -5.666]
+  };
+
+  // ✅ Données de la carte depuis Django
+  var carteData = {{ carte_data|safe|default:'null' }};
+
+  if (carteData) {
+    var posA = GPS_COMMUNES[carteData.depart] || [12.639, -8.002];
+    var posB = GPS_COMMUNES[carteData.arrivee] || [11.316, -5.666];
+    
+    // Marqueur départ
+    L.marker(posA, {
+      icon: L.divIcon({ 
+        className: 'custom-marker', 
+        html: '<div style="background:#2b8c5e; color:white; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:bold;">🌾</div>',
+        iconSize: [30, 30]
+      })
+    }).addTo(mapClient).bindPopup("<b>🌾 Collecte</b><br>" + carteData.depart);
+    
+    // Marqueur arrivée
+    L.marker(posB, {
+      icon: L.divIcon({ 
+        className: 'custom-marker', 
+        html: '<div style="background:#b89a6a; color:white; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:bold;">🏪</div>',
+        iconSize: [30, 30]
+      })
+    }).addTo(mapClient).bindPopup("<b>🏪 Votre Boutique</b><br>" + carteData.arrivee);
+    
+    // Ligne de trajet
+    L.polyline([posA, posB], { 
+      color: '#2b8c5e', 
+      weight: 3, 
+      dashArray: '8, 8',
+      opacity: 0.5
+    }).addTo(mapClient);
+    
+    // Position du camion
+    var posCamion = posA;
+    var statut = carteData.statut;
+    var txt = "🚛 Camion au hangar";
+    
+    if (statut === 'CHARGEE') {
+      posCamion = posA;
+      txt = "📦 Fret chargé";
+    } else if (statut === 'EN_TRANSIT') {
+      posCamion = [(posA[0] + posB[0]) / 2, (posA[1] + posB[1]) / 2];
+      txt = "⚡ Convoi sur la route...";
+    } else if (statut === 'LIVREE' || statut === 'ACCEPTÉE') {
+      posCamion = posB;
+      txt = "🏁 Fret livré !";
+    }
+    
+    // Marqueur camion
+    L.marker(posCamion, {
+      icon: L.divIcon({
+        className: 'custom-div-icon',
+        html: '<div style="background:#2b8c5e; color:white; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:bold; box-shadow:0 2px 12px rgba(43,140,94,0.2);">🚛</div>',
+        iconSize: [35, 35],
+        iconAnchor: [17, 17]
+      })
+    }).addTo(mapClient).bindPopup(
+      "<b>" + txt + "</b><br>Chauffeur : " + carteData.chauffeur
+    ).openPopup();
+    
+    // Ajuster la vue
+    mapClient.fitBounds(L.latLngBounds([posA, posB]), { padding: [30, 30] });
+  }
+</script>
+
+</body>
+</html>

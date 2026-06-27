@@ -1,0 +1,377 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANI_AGRO - Connexion professionnelle</title>
+    
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('{% static 'image_fc2ea63b.png' %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Carte principale */
+        .login-card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        /* En-tête */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .brand-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-sani {
+            color: #2e7d32;
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-agro {
+            color: #1e293b;
+        }
+
+        .brand-subtitle {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .brand-subtitle i {
+            font-size: 11px;
+            margin-right: 6px;
+            color: #2e7d32;
+        }
+
+        /* Messages d'erreur */
+        .error-message {
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-left: 4px solid #dc2626;
+            border-radius: 12px;
+            color: #991b1b;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message i {
+            font-size: 14px;
+            color: #dc2626;
+        }
+
+        /* Groupes de formulaire */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .form-label i {
+            margin-right: 6px;
+            color: #2e7d32;
+            font-size: 11px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 14px;
+            font-family: 'Segoe UI', sans-serif;
+            color: #1e293b;
+            outline: none;
+            transition: all 0.2s ease;
+            background-color: #fafbfc;
+        }
+
+        .form-control:focus {
+            border-color: #2e7d32;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        select.form-control {
+            cursor: pointer;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%232e7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 14px;
+        }
+
+        /* Options supplémentaires */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 24px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .remember-me input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #2e7d32;
+        }
+
+        .remember-me i {
+            font-size: 12px;
+            color: #2e7d32;
+        }
+
+        .forgot-link {
+            color: #2e7d32;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: #1b5e20;
+            text-decoration: underline;
+        }
+
+        .forgot-link i {
+            font-size: 11px;
+        }
+
+        /* Bouton */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: #ffffff;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Segoe UI', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #1b5e20 0%, #0f3d12 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .footer-text {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .footer-text i {
+            margin-right: 6px;
+            color: #2e7d32;
+        }
+
+        .footer-text a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+
+        .footer-text a:hover {
+            color: #1b5e20;
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .login-card {
+                padding: 28px 20px;
+            }
+            .brand-title {
+                font-size: 28px;
+            }
+            .form-options {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        
+        <!-- En-tête -->
+        <div class="brand-header">
+            <h1 class="brand-title">
+                <span class="logo-sani">SANI_</span><span class="logo-agro">AGRO</span>
+            </h1>
+            <p class="brand-subtitle">
+                <i class="fas fa-chart-line"></i>
+                Accédez à votre espace professionnel interconnecté
+            </p>
+        </div>
+
+        <!-- Affichage des erreurs Django -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-message">
+                    <i class="fas fa-circle-exclamation"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Formulaire de connexion -->
+        <form method="POST" action="{% url 'login_select' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-user-circle"></i> Nom d'utilisateur ou email
+                </label>
+                <input type="text" name="username" class="form-control" 
+                       placeholder="ex: amadou_kanoute@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-briefcase"></i> Sélectionnez votre espace
+                </label>
+                <select name="role" class="form-control" required>
+                    <option value="" disabled selected>Choisissez votre profil d'accès</option>
+                    <option value="producteur">
+                        <i class="fas fa-seedling"></i> Espace Production
+                    </option>
+                    <option value="commercant">
+                        <i class="fas fa-store"></i> Espace Commerçant
+                    </option>
+
+                    <option value="transporteur">
+                        <i class="fas fa-store"></i> Espace Transporteur
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-lock"></i> Mot de passe
+                </label>
+                <input type="password" name="password" class="form-control" 
+                       placeholder="Entrez votre mot de passe" required>
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember">
+                    <i class="fas fa-check-circle"></i>
+                    Se souvenir de moi
+                </label>
+                <a href="#" class="forgot-link">
+                    <i class="fas fa-key"></i>
+                    Mot de passe oublié ?
+                </a>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-arrow-right-to-bracket"></i> Se connecter à mon espace
+            </button>
+        </form>
+
+        <div class="footer-text">
+            <i class="fas fa-user-plus"></i>
+            Nouveau sur la plateforme ? <a href="{% url 'register_select' %}">Créer un compte</a>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+ 

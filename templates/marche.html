@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SANI-AGRO - Marché Public Agricole</title>
+
+    <!-- 🔧 CHARGEMENT DES FICHIERS STATIQUES -->
+    {% load static %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #e8f3ec;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ⬅️ SIDEBAR – VERT FONCÉ PROFESSIONNEL */
+        .sidebar {
+            width: 280px;
+            background: #0f2a1a;
+            color: #e8f3ec;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 28px;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar h2 {
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: #4caf84;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .sidebar h2::before {
+            content: '\f06c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #4caf84;
+            font-size: 26px;
+            background: rgba(76, 175, 132, 0.15);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 16px 12px;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 2px;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 20px;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar ul li a i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .sidebar ul li a:hover {
+            background: rgba(76, 175, 132, 0.12);
+            color: #ffffff;
+            border-left-color: #4caf84;
+            transform: translateX(4px);
+        }
+
+        .sidebar ul li a:hover i {
+            color: #4caf84;
+        }
+
+        .sidebar ul li.active a {
+            background: rgba(76, 175, 132, 0.15);
+            color: #ffffff;
+            border-left-color: #4caf84;
+            font-weight: 600;
+        }
+
+        .sidebar ul li.active a i {
+            color: #4caf84;
+        }
+
+        .sidebar ul li:last-child {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 15px;
+        }
+
+        .sidebar ul li:last-child a {
+            color: rgba(255, 150, 150, 0.6);
+        }
+
+        .sidebar ul li:last-child a i {
+            color: rgba(255, 150, 150, 0.4);
+        }
+
+        .sidebar ul li:last-child a:hover {
+            background: rgba(255, 80, 80, 0.1);
+            color: #ff8a8a;
+            border-left-color: #ff6b6b;
+        }
+
+        .sidebar ul li:last-child a:hover i {
+            color: #ff6b6b;
+        }
+
+        /* ➡️ CONTENU PRINCIPAL */
+        .main-content {
+            margin-left: 280px;
+            padding: 32px 40px 60px;
+            width: calc(100% - 280px);
+            box-sizing: border-box;
+            background: #e8f3ec;
+            min-height: 100vh;
+        }
+
+        /* 🎯 EN-TÊTE DE PAGE */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f2a1a;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .page-header h1::before {
+            content: '\f54e';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #2b8c5e;
+            background: #e6f5ee;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 22px;
+        }
+
+        .page-header div {
+            display: flex;
+            gap: 20px;
+            background: #ffffff;
+            padding: 10px 22px;
+            border-radius: 60px;
+            border: 1px solid rgba(76, 175, 132, 0.12);
+            box-shadow: 0 2px 10px rgba(15, 42, 26, 0.04);
+            font-size: 13px;
+            font-weight: 500;
+            color: #3d5e4e;
+            align-items: center;
+        }
+
+        .page-header div span {
+            font-weight: 700;
+            color: #0f2a1a;
+            background: #e6f5ee;
+            padding: 0 10px;
+            border-radius: 20px;
+        }
+
+        /* 🚨 BANDEAU D'ALERTE */
+        #security-alert {
+            display: none;
+            background: #ffffff;
+            border: 1px solid rgba(176, 124, 124, 0.2);
+            color: #8a5c5c;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 16px rgba(160, 80, 80, 0.04);
+            border-left: 5px solid #b07c7c;
+        }
+
+        #security-alert::before {
+            content: '\f071';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #b07c7c;
+            font-size: 20px;
+        }
+
+        /* 🔍 MODULE DE RECHERCHE */
+        .search-wrapper {
+            background: #ffffff;
+            padding: 16px 24px;
+            border-radius: 60px;
+            box-shadow: 0 4px 20px rgba(15, 42, 26, 0.04);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border: 1px solid rgba(76, 175, 132, 0.10);
+            transition: all 0.3s ease;
+        }
+
+        .search-wrapper:focus-within {
+            border-color: #2b8c5e;
+            box-shadow: 0 4px 25px rgba(43, 140, 94, 0.10);
+        }
+
+        .search-wrapper i {
+            color: #5a7a6a;
+            font-size: 18px;
+        }
+
+        .search-wrapper input {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            font-size: 15px;
+            font-weight: 400;
+            outline: none;
+            background: transparent;
+            color: #1a3a2a;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-wrapper input::placeholder {
+            color: #8aaa9a;
+            font-weight: 300;
+        }
+
+        .search-wrapper .shortcut {
+            font-size: 11px;
+            color: #8aaa9a;
+            background: #eef6f1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* 🌿 FILTRES */
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-container button {
+            padding: 8px 20px;
+            border-radius: 40px;
+            background: #ffffff;
+            border: 1px solid rgba(76, 175, 132, 0.15);
+            font-size: 13px;
+            font-weight: 500;
+            color: #3d5e4e;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-container button:hover {
+            background: #e6f5ee;
+            border-color: #2b8c5e;
+            color: #1a7a4a;
+            transform: translateY(-2px);
+        }
+
+        .filter-container button.active {
+            background: #2b8c5e;
+            color: white;
+            border-color: #2b8c5e;
+            box-shadow: 0 4px 16px rgba(43, 140, 94, 0.2);
+        }
+
+        .filter-container button.active i {
+            color: white;
+        }
+
+        .filter-container button i {
+            font-size: 13px;
+            color: #5a7a6a;
+        }
+
+        /* 🛒 CATALOGUE - VERSION PROFESSIONNELLE */
+        #container-catalogue {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .harvest-card {
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(15, 42, 26, 0.04);
+            border: 1px solid rgba(76, 175, 132, 0.08);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+
+        .harvest-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -8px rgba(43, 140, 94, 0.15);
+            border-color: #c5e0d0;
+        }
+
+        /* 📸 ZONE IMAGE AVEC BADGES */
+        .card-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: #eef6f1;
+            height: 220px;
+        }
+
+        .card-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .harvest-card:hover .card-image-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .card-image-wrapper .placeholder-image {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #9abbab;
+            background: #eef6f1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .card-image-wrapper .placeholder-image i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            color: #c5e0d0;
+        }
+
+        /* 🏷️ BADGES SUR L'IMAGE */
+        .card-badges {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        .badge {
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .badge-fresh {
+            background: #2b8c5e;
+            color: white;
+        }
+
+        .badge-urgent {
+            background: #b89a6a;
+            color: white;
+        }
+
+        .badge-soldout {
+            background: #b07c7c;
+            color: white;
+        }
+
+        /* 📋 CORPS DE LA CARTE */
+        .card-body {
+            padding: 22px 24px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f2a1a;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+
+        .card-category {
+            background: #e6f5ee;
+            color: #1a7a4a;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            margin-left: 8px;
+            flex-shrink: 0;
+            border: 1px solid rgba(43, 140, 94, 0.10);
+        }
+
+        /* 👤 PRODUCTEUR */
+        .card-producer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #4f6b6b;
+            margin-bottom: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid #eaf3ed;
+        }
+
+        .card-producer i {
+            color: #b89a6a;
+            font-size: 14px;
+        }
+
+        .card-producer strong {
+            color: #0f2a1a;
+            font-weight: 600;
+        }
+
+        /* 📊 GRILLE DES INFOS PRODUIT */
+        .product-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 16px;
+            margin: 8px 0 14px;
+        }
+
+        .product-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #4f6b6b;
+        }
+
+        .product-info-item i {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
+            color: #5a7a6a;
+        }
+
+        .product-info-item .value {
+            font-weight: 600;
+            color: #0f2a1a;
+        }
+
+        .product-info-item .value.price {
+            color: #1a7a4a;
+            font-size: 15px;
+        }
+
+        .product-info-item .value.unit {
+            font-weight: 400;
+            color: #6a8a7a;
+            font-size: 12px;
+        }
+
+        /* 📅 DATE DISPONIBILITÉ */
+        .card-expiry {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #7a5a5a;
+            margin: 4px 0 16px;
+            padding: 6px 12px;
+            background: #fdf8f0;
+            border-radius: 8px;
+            border: 1px solid rgba(184, 154, 106, 0.10);
+        }
+
+        .card-expiry i {
+            color: #b89a6a;
+        }
+
+        .card-expiry strong {
+            color: #7a5a5a;
+        }
+
+        /* 🔘 BOUTON COMMANDE */
+        .card-actions {
+            margin-top: auto;
+        }
+
+        .card-actions button {
+            width: 100%;
+            padding: 14px 24px;
+            border-radius: 60px;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-order {
+            background: #2b8c5e;
+            color: white;
+            box-shadow: 0 4px 16px rgba(43, 140, 94, 0.2);
+        }
+
+        .btn-order:hover {
+            background: #1f724b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(43, 140, 94, 0.3);
+        }
+
+        .btn-disabled {
+            background: #e8f2ec;
+            color: #5a7a6a;
+            cursor: not-allowed;
+            border: 1px solid #d5eade;
+        }
+
+        .btn-disabled i {
+            color: #7a9a8a;
+        }
+
+        /* 📱 RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+                width: calc(100% - 240px);
+                padding: 24px 28px;
+            }
+            #container-catalogue {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+                padding-top: 16px;
+            }
+            .sidebar h2 {
+                font-size: 0;
+                padding: 0 0 16px;
+            }
+            .sidebar h2::before {
+                font-size: 22px;
+                padding: 10px;
+            }
+            .sidebar ul li a {
+                padding: 12px 16px;
+                justify-content: center;
+            }
+            .sidebar ul li a span {
+                display: none;
+            }
+            .sidebar ul li a i {
+                font-size: 18px;
+                margin: 0;
+            }
+            .main-content {
+                margin-left: 60px;
+                width: calc(100% - 60px);
+                padding: 16px;
+            }
+            .page-header h1 {
+                font-size: 20px;
+            }
+            .page-header h1::before {
+                padding: 8px;
+                font-size: 18px;
+            }
+            .page-header div {
+                padding: 6px 14px;
+                flex-wrap: wrap;
+                gap: 6px 14px;
+                font-size: 12px;
+            }
+            #container-catalogue {
+                grid-template-columns: 1fr;
+            }
+            .card-image-wrapper {
+                height: 180px;
+            }
+            .card-title {
+                font-size: 17px;
+            }
+            .product-info-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 4px 12px;
+            }
+            .card-body {
+                padding: 18px 18px 20px;
+            }
+            .filter-container button {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .card-actions button {
+                padding: 12px 18px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px 10px;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .page-header div {
+                justify-content: center;
+            }
+            .search-wrapper {
+                padding: 12px 16px;
+                border-radius: 16px;
+            }
+            .search-wrapper input {
+                font-size: 14px;
+            }
+            .search-wrapper .shortcut {
+                display: none;
+            }
+            .filter-container {
+                gap: 6px;
+            }
+            .filter-container button {
+                padding: 5px 12px;
+                font-size: 11px;
+            }
+            .card-image-wrapper {
+                height: 150px;
+            }
+            .card-title {
+                font-size: 16px;
+            }
+            .product-info-item {
+                font-size: 12px;
+            }
+            .product-info-item .value.price {
+                font-size: 14px;
+            }
+            .card-expiry {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            .card-actions button {
+                font-size: 12px;
+                padding: 10px 14px;
+            }
+            .badge {
+                font-size: 9px;
+                padding: 3px 10px;
+            }
+            #security-alert {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        /* Animation d'apparition */
+        .harvest-card {
+            animation: fadeUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .harvest-card:nth-child(1) { animation-delay: 0.05s; }
+        .harvest-card:nth-child(2) { animation-delay: 0.10s; }
+        .harvest-card:nth-child(3) { animation-delay: 0.15s; }
+        .harvest-card:nth-child(4) { animation-delay: 0.20s; }
+        .harvest-card:nth-child(5) { animation-delay: 0.25s; }
+        .harvest-card:nth-child(6) { animation-delay: 0.30s; }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar gauche -->
+    <div class="sidebar">
+        <h2>SANI-AGRO</h2>
+        <ul>
+            <li>
+                <a href="{% url 'index' %}">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Accueil</span>
+                </a>
+            </li>
+            {% if request.user.is_authenticated and request.user.utilisateur_profile.role == 'COMMERCANT' %}
+                <li>
+                    <a href="{% url 'dashboard_commercant' %}">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Espace Commerçant</span>
+                    </a>
+                </li>
+            {% elif request.user.is_authenticated and request.user.utilisateur_profile.role == 'PRODUCTEUR' %}
+                <li>
+                    <a href="{% url 'dashboard_producteur' %}">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Espace Producteur</span>
+                    </a>
+                </li>
+            {% endif %}
+            <li class="active">
+                <a href="#">
+                    <i class="fa-solid fa-shop"></i>
+                    <span>Marché Public</span>
+                </a>
+            </li>
+            {% if request.user.is_authenticated %}
+                <li>
+                    <a href="{% url 'user_logout' %}">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Déconnexion</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>Marché Public</h1>
+            <div>
+                <i class="fa-regular fa-seedling"></i>
+                Produits : <span>{{ produits|length }}</span>
+                <i class="fa-regular fa-truck-fast" style="color:#2b8c5e; margin-left:8px;"></i>
+                Livraison <i class="fa-regular fa-circle-check" style="color:#2b8c5e;"></i>
+            </div>
+        </div>
+
+        <!-- 🚨 Alerte rouge -->
+        <div id="security-alert">
+            <strong>Accès restreint</strong> — Veuillez vous connecter en tant que <strong>Commerçant</strong> pour passer une commande.
+        </div>
+
+        <!-- Barre de recherche -->
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-harvest" placeholder="Rechercher une récolte (ex: Tomates, Oignons, Manioc...)" onkeyup="filtrerLeCatalogue()">
+            <span class="shortcut"><i class="fa-regular fa-keyboard"></i> Ctrl+F</span>
+        </div>
+
+        <!-- Filtres -->
+        <div class="filter-container">
+            <button class="active" onclick="filtrerParCategorie('tous', this)">
+                <i class="fa-solid fa-grid-2"></i> Tous
+            </button>
+            <button onclick="filtrerParCategorie('Légumes', this)">
+                <i class="fa-solid fa-carrot"></i> Légumes
+            </button>
+            <button onclick="filtrerParCategorie('fruit', this)">
+                <i class="fa-solid fa-apple-whole"></i> Fruits
+            </button>
+            <button onclick="filtrerParCategorie('cereale', this)">
+                <i class="fa-solid fa-wheat-awn"></i> Céréales
+            </button>
+            <button onclick="filtrerParCategorie('tubercule', this)">
+                <i class="fa-solid fa-seedling"></i> Tubercules
+            </button>
+        </div>
+
+        <!-- Catalogue -->
+        <div id="container-catalogue">
+            {% for pr in produits %}
+            <div class="harvest-card"
+                 data-itemname="{{ pr.nom_produit|lower }}"
+                 data-category="{{ pr.categorie|lower }}">
+
+                <!-- 📸 ZONE IMAGE AVEC BADGES -->
+                <div class="card-image-wrapper">
+                    {% if pr.image_produit %}
+                        <img src="{{ pr.image_produit.url }}" alt="{{ pr.nom_produit }}">
+                    {% else %}
+                        <div class="placeholder-image">
+                            <i class="fa-regular fa-image"></i>
+                            <span>Pas d'image</span>
+                        </div>
+                    {% endif %}
+
+                    <!-- Badges -->
+                    <div class="card-badges">
+                        {% if pr.quantite_dispo > 100 %}
+                            <span class="badge badge-fresh">
+                                <i class="fa-regular fa-star"></i> Stock frais
+                            </span>
+                        {% elif pr.quantite_dispo > 0 and pr.quantite_dispo <= 50 %}
+                            <span class="badge badge-urgent">
+                                <i class="fa-regular fa-clock"></i> Derniers kg
+                            </span>
+                        {% elif pr.quantite_dispo == 0 %}
+                            <span class="badge badge-soldout">
+                                <i class="fa-regular fa-circle-xmark"></i> Épuisé
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- 📋 CORPS DE LA CARTE -->
+                <div class="card-body">
+                    <!-- Titre + Catégorie -->
+                    <div class="card-header-info">
+                        <span class="card-title">{{ pr.nom_produit }}</span>
+                        <span class="card-category">{{ pr.categorie }}</span>
+                    </div>
+
+                    <!-- Producteur -->
+                    <div class="card-producer">
+                        <i class="fa-solid fa-user-wheat"></i>
+                        Producteur :
+                        <strong>
+                            {% if pr.producteur.profil.nom %}
+                                {{ pr.producteur.profil.nom|capfirst }}
+                            {% else %}
+                                {{ pr.producteur }}
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <!-- Grille des infos -->
+                    <div class="product-info-grid">
+                        <div class="product-info-item">
+                            <i class="fa-solid fa-weight-scale"></i>
+                            <span class="value">{{ pr.quantite_dispo }}</span>
+                            <span class="unit">kg</span>
+                        </div>
+                        <div class="product-info-item">
+                            <i class="fa-solid fa-coins"></i>
+                            <span class="value price">{{ pr.prix_unitaire }}</span>
+                            <span class="unit">FCFA/kg</span>
+                        </div>
+                        <div class="product-info-item" style="grid-column: span 2;">
+                            <i class="fa-solid fa-location-dot"></i>
+                            Zone : <span class="value">{{ pr.zone_production|default:"Mali" }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Date de disponibilité -->
+                    <div class="card-expiry">
+                        <i class="fa-regular fa-calendar"></i>
+                        Disponible jusqu'au : <strong>{{ pr.date_disponibilite|date:"d/m/Y" }}</strong>
+                    </div>
+
+                    <!-- Bouton commande -->
+                    <div class="card-actions">
+                        {% if request.user.is_authenticated and request.user.utilisateur_profile.role == 'COMMERCANT' %}
+                            <button class="btn-order" onclick="window.location.href='{% url 'passer_commande' %}?produit_id={{ pr.id }}'">
+                                <i class="fa-solid fa-basket-shopping"></i> Passer commande
+                            </button>
+                        {% else %}
+                            <button class="btn-disabled" onclick="afficherAlerte()">
+                                <i class="fa-solid fa-lock"></i> Réservé aux Commerçants
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align:center; color:#7a9a8a; padding:60px 20px; background:#ffffff; border-radius:20px; border:1px dashed #c5e0d0;">
+                <i class="fa-regular fa-face-frown" style="font-size: 40px; color: #9abbab; display: block; margin-bottom: 12px;"></i>
+                <p style="font-size: 16px; font-weight: 500; color:#0f2a1a;">Aucun produit disponible pour le moment.</p>
+                <p style="font-size: 13px; color: #8aaa9a;">Revenez plus tard, de nouveaux produits arrivent régulièrement.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Recherche publique
+        function filtrerLeCatalogue() {
+            var filtreText = document.getElementById('search-harvest').value.toLowerCase();
+            var cartes = document.getElementsByClassName('harvest-card');
+
+            for (var i = 0; i < cartes.length; i++) {
+                var carte = cartes[i];
+                var nomProduit = carte.getAttribute('data-itemname');
+
+                if (filtreText !== "" && !nomProduit.includes(filtreText)) {
+                    carte.style.display = "none";
+                } else {
+                    carte.style.display = "flex";
+                }
+            }
+        }
+
+        // Filtrage par catégories
+        function filtrerParCategorie(categorie, element) {
+            var cartes = document.getElementsByClassName('harvest-card');
+            var buttons = document.querySelectorAll('.filter-container button');
+
+            buttons.forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            element.classList.add('active');
+
+            for (var i = 0; i < cartes.length; i++) {
+                var carte = cartes[i];
+                var cat = carte.getAttribute('data-category') || 'legume';
+
+                if (categorie === 'tous' || cat === categorie) {
+                    carte.style.display = "flex";
+                } else {
+                    carte.style.display = "none";
+                }
+            }
+
+            if (document.getElementById('search-harvest').value !== "") {
+                filtrerLeCatalogue();
+            }
+        }
+
+        // Affiche l'alerte
+        function afficherAlerte() {
+            var alert = document.getElementById('security-alert');
+            alert.style.display = "flex";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            setTimeout(function() {
+                alert.style.display = "none";
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

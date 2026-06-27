@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SANI-AGRO - Publier une Récolte</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #e8f3ec;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            color: #0f2a1a;
+            min-height: 100vh;
+        }
+
+        /* ⬅️ SIDEBAR – VERT FONCÉ PROFESSIONNEL */
+        .sidebar {
+            width: 280px;
+            background: #0f2a1a;
+            color: #e8f3ec;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 28px;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-brand {
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: #4caf84;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sidebar-brand i {
+            color: #4caf84;
+            font-size: 26px;
+            background: rgba(76, 175, 132, 0.15);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 16px 12px;
+            margin: 0;
+        }
+
+        .sidebar-item {
+            margin-bottom: 2px;
+        }
+
+        .sidebar-item a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 20px;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.25s ease;
+            border-radius: 12px;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-item a i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-item a:hover {
+            background: rgba(76, 175, 132, 0.12);
+            color: #ffffff;
+            border-left-color: #4caf84;
+            transform: translateX(4px);
+        }
+
+        .sidebar-item a:hover i {
+            color: #4caf84;
+        }
+
+        .sidebar-item.active a {
+            background: rgba(76, 175, 132, 0.15);
+            color: #ffffff;
+            border-left-color: #4caf84;
+            font-weight: 600;
+        }
+
+        .sidebar-item.active a i {
+            color: #4caf84;
+        }
+
+        /* ➡️ CONTENU PRINCIPAL */
+        .main-content {
+            margin-left: 280px;
+            padding: 32px 40px 60px;
+            width: calc(100% - 280px);
+            box-sizing: border-box;
+            background: #e8f3ec;
+            min-height: 100vh;
+        }
+
+        /* 🎯 EN-TÊTE */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f2a1a;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header h1 i {
+            color: #2b8c5e;
+            background: #e6f5ee;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 22px;
+        }
+
+        .page-header .breadcrumb {
+            font-size: 13px;
+            color: #5a7a6a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-header .breadcrumb a {
+            color: #2b8c5e;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .page-header .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* 📦 CONTAINER FORMULAIRE */
+        .container-form {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px -12px rgba(15, 42, 26, 0.12);
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            overflow: hidden;
+            border: 1px solid rgba(76, 175, 132, 0.10);
+            animation: fadeUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 📁 VOLET GAUCHE - INFO */
+        .info-panel {
+            padding: 40px 36px;
+            background: #eef6f1;
+            border-right: 1px solid rgba(76, 175, 132, 0.10);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-panel h2 {
+            margin-top: 0;
+            color: #0f2a1a;
+            border-bottom: 2px solid #d9eee0;
+            padding-bottom: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-panel h2 i {
+            color: #2b8c5e;
+            font-size: 20px;
+        }
+
+        .info-panel .info-text {
+            font-size: 14px;
+            color: #4f6b6b;
+            line-height: 1.7;
+            margin-top: 6px;
+            flex: 1;
+        }
+
+        .info-panel .info-text strong {
+            color: #0f2a1a;
+        }
+
+        .info-card {
+            background: #ffffff;
+            padding: 18px 20px;
+            border-radius: 16px;
+            border: 1px solid #d9eee0;
+            margin-top: 16px;
+            box-shadow: 0 4px 12px rgba(15, 42, 26, 0.02);
+        }
+
+        .info-card .card-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a7a4a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .info-card .card-title i {
+            color: #2b8c5e;
+        }
+
+        .info-card .card-body {
+            font-size: 13px;
+            color: #4f6b6b;
+            line-height: 1.6;
+        }
+
+        .info-card .card-body .highlight {
+            color: #1a7a4a;
+            font-weight: 600;
+        }
+
+        .info-card .card-body .warn {
+            color: #b07c7c;
+            font-weight: 600;
+        }
+
+        /* 📝 VOLET DROIT - FORMULAIRE */
+        .form-panel {
+            padding: 40px 44px 44px;
+            background: #ffffff;
+        }
+
+        .form-panel h2 {
+            margin-top: 0;
+            color: #0f2a1a;
+            border-bottom: 2px solid #e6f5ee;
+            padding-bottom: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-panel h2 i {
+            color: #2b8c5e;
+        }
+
+        /* 📋 CHAMPS DU FORMULAIRE */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #3d5e4e;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group label i {
+            margin-right: 6px;
+            color: #5a7a6a;
+        }
+
+        .form-group label .required {
+            color: #b07c7c;
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(76, 175, 132, 0.15);
+            border-radius: 14px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            background: #f8fbf9;
+            color: #1a3a2a;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #2b8c5e;
+            box-shadow: 0 0 0 4px rgba(43, 140, 94, 0.08);
+            background: white;
+        }
+
+        .form-control::placeholder {
+            color: #9abbab;
+            font-weight: 300;
+        }
+
+        .form-control[type="file"] {
+            padding: 10px 14px;
+            background: #eef6f1;
+            cursor: pointer;
+        }
+
+        .form-control[type="file"]::file-selector-button {
+            padding: 8px 20px;
+            border-radius: 40px;
+            border: none;
+            background: #2b8c5e;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            margin-right: 12px;
+        }
+
+        .form-control[type="file"]::file-selector-button:hover {
+            background: #1f724b;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* 🔘 BOUTON DE SOUMISSION */
+        .btn-submit {
+            background: #2b8c5e;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 60px;
+            font-size: 15px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 20px rgba(43, 140, 94, 0.25);
+            letter-spacing: 0.2px;
+            margin-top: 6px;
+        }
+
+        .btn-submit:hover {
+            background: #1f724b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(43, 140, 94, 0.35);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-submit i {
+            font-size: 16px;
+        }
+
+        /* 📱 RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                margin-left: 240px;
+                width: calc(100% - 240px);
+                padding: 24px 28px;
+            }
+            .container-form {
+                grid-template-columns: 0.9fr 1.1fr;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .container-form {
+                grid-template-columns: 1fr;
+                border-radius: 24px;
+            }
+            .info-panel {
+                border-right: none;
+                border-bottom: 1px solid rgba(76, 175, 132, 0.10);
+                padding: 28px 24px;
+            }
+            .form-panel {
+                padding: 28px 24px 32px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+                padding-top: 16px;
+            }
+            .sidebar-brand {
+                font-size: 0;
+                padding: 0 0 16px;
+            }
+            .sidebar-brand i {
+                font-size: 22px;
+                padding: 10px;
+            }
+            .sidebar-item a {
+                padding: 12px 16px;
+                justify-content: center;
+            }
+            .sidebar-item a span {
+                display: none;
+            }
+            .sidebar-item a i {
+                font-size: 18px;
+                margin: 0;
+            }
+            .main-content {
+                margin-left: 60px;
+                width: calc(100% - 60px);
+                padding: 16px;
+            }
+            .page-header h1 {
+                font-size: 20px;
+            }
+            .page-header h1 i {
+                padding: 8px;
+                font-size: 18px;
+            }
+            .page-header .breadcrumb {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px 10px;
+            }
+            .info-panel {
+                padding: 18px 14px;
+            }
+            .form-panel {
+                padding: 18px 14px 20px;
+            }
+            .form-panel h2 {
+                font-size: 16px;
+            }
+            .form-control {
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+            .btn-submit {
+                font-size: 14px;
+                padding: 14px 18px;
+            }
+            .info-card {
+                padding: 14px 14px;
+            }
+            .info-card .card-body {
+                font-size: 12px;
+            }
+        }
+
+        /* Animation d'apparition */
+        .container-form {
+            animation: fadeUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ⬅️ SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-leaf"></i>
+            <span>SANI-AGRO</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="{% url 'dashboard_producteur' %}">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Tableau de bord</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="{% url 'mes_stocks' %}">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span>Mes Stocks</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="{% url 'commandes_recues' %}">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Commandes reçues</span>
+                </a>
+            </li>
+            <li class="sidebar-item active">
+                <a href="#">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <span>Ajouter un produit</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ➡️ CONTENU PRINCIPAL -->
+    <div class="main-content">
+        <!-- EN-TÊTE -->
+        <div class="page-header">
+            <h1>
+                <i class="fa-solid fa-plus-circle"></i>
+                Publier une récolte
+            </h1>
+            <div class="breadcrumb">
+                <a href="{% url 'dashboard_producteur' %}">Dashboard</a>
+                <i class="fa-regular fa-chevron-right"></i>
+                <span>Nouveau produit</span>
+            </div>
+        </div>
+
+        <div class="container-form">
+            <!-- 📁 VOLET GAUCHE : CONSIGNES -->
+            <div class="info-panel">
+                <h2>
+                    <i class="fa-regular fa-circle-info"></i>
+                    Consignes SANI-AGRO
+                </h2>
+
+                <div class="info-text">
+                    <p>
+                        <i class="fa-regular fa-check-circle" style="color:#2b8c5e;"></i>
+                        Renseignez avec précision les informations de votre récolte.
+                    </p>
+                    <p style="margin-top:8px;">
+                        <i class="fa-regular fa-check-circle" style="color:#2b8c5e;"></i>
+                        La <strong>photo du lot</strong> est obligatoire pour garantir la transparence.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-title">
+                        <i class="fa-regular fa-clock"></i>
+                        Automate de Fraîcheur
+                    </div>
+                    <div class="card-body">
+                        Dès que la <span class="highlight">date limite de validité</span> renseignée sera dépassée, le produit sera
+                        <span class="warn">automatiquement retiré du catalogue public</span> pour protéger la qualité.
+                        <br><br>
+                        <i class="fa-regular fa-shield-check" style="color:#2b8c5e;"></i>
+                        <span style="font-size:12px; color:#6a8a7a;">Garantie de fraîcheur assurée</span>
+                    </div>
+                </div>
+
+                <div class="info-card" style="margin-top:12px; border-color:#d9eee0;">
+                    <div class="card-title" style="color:#b89a6a;">
+                        <i class="fa-regular fa-lightbulb"></i>
+                        Bon à savoir
+                    </div>
+                    <div class="card-body">
+                        <i class="fa-regular fa-check" style="color:#2b8c5e;"></i>
+                        Utilisez des <strong>mots-clés</strong> dans le nom du produit
+                        <br>
+                        <i class="fa-regular fa-check" style="color:#2b8c5e;"></i>
+                        Le prix doit être <strong>compétitif</strong> avec le marché
+                        <br>
+                        <i class="fa-regular fa-check" style="color:#2b8c5e;"></i>
+                        Une photo <strong>claire</strong> attire plus d'acheteurs
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📝 VOLET DROIT : FORMULAIRE -->
+            <div class="form-panel">
+                <h2>
+                    <i class="fa-regular fa-file-pen"></i>
+                    Fiche descriptive de la récolte
+                </h2>
+
+                <form method="POST" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Nom du produit -->
+                    <div class="form-group">
+                        <label for="nom_produit">
+                            <i class="fa-regular fa-tag"></i>
+                            Désignation de la culture
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" id="nom_produit" name="nom_produit"
+                               placeholder="Ex: Tomates de Sikasso, Oignons de Niono"
+                               class="form-control" required>
+                    </div>
+
+                    <!-- Catégorie -->
+                    <div class="form-group">
+                        <label for="categorie">
+                            <i class="fa-regular fa-layer-group"></i>
+                            Catégorie agricole
+                            <span class="required">*</span>
+                        </label>
+                        <select id="categorie" name="categorie" class="form-control" required>
+                            <option value="Légumes"> Légumes</option>
+                            <option value="Fruits"> Fruits</option>
+                            <option value="Céréales"> Céréales</option>
+                            <option value="Tubercules"> Tubercules</option>
+                        </select>
+                    </div>
+
+                    <!-- Quantité & Prix -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quantite_dispo">
+                                <i class="fa-regular fa-weight-scale"></i>
+                                Volume (kg)
+                                <span class="required">*</span>
+                            </label>
+                            <input type="number" id="quantite_dispo" name="quantite_dispo"
+                                   min="1" value="100" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="prix_unitaire">
+                                <i class="fa-regular fa-coins"></i>
+                                Prix (FCFA/kg)
+                                <span class="required">*</span>
+                            </label>
+                            <input type="number" id="prix_unitaire" name="prix_unitaire"
+                                   min="1" value="500" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Zone de production -->
+                    <div class="form-group">
+                        <label for="zone_p">
+                            <i class="fa-regular fa-location-dot"></i>
+                            Zone de production réelle
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" id="zone_p" name="zone_p"
+                               placeholder="Ex: Sikasso, Ségou, Mopti, Bamako"
+                               class="form-control" required>
+                    </div>
+
+                    <!-- Date limite -->
+                    <div class="form-group">
+                        <label for="date_disponibilite">
+                            <i class="fa-regular fa-calendar"></i>
+                            Date limite de disponibilité
+                            <span class="required">*</span>
+                        </label>
+                        <input type="date" id="date_disponibilite" name="date_disponibilite"
+                               class="form-control" required>
+                    </div>
+
+                    <!-- Photo -->
+                    <div class="form-group" style="margin-bottom: 28px;">
+                        <label for="image_produit">
+                            <i class="fa-regular fa-image"></i>
+                            Illustration visuelle (Photo du lot)
+                            <span class="required">*</span>
+                        </label>
+                        <input type="file" id="image_produit" name="image_produit"
+                               class="form-control" accept="image/*" required>
+                        <div style="font-size:11px; color:#8aaa9a; margin-top:4px;">
+                            <i class="fa-regular fa-circle-info"></i>
+                            Format JPG, PNG ou WEBP • Max 5MB
+                        </div>
+                    </div>
+
+                    <!-- Bouton de soumission -->
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-regular fa-cloud-arrow-up"></i>
+                        Publier la récolte sur le Marché Public
+                        <i class="fa-regular fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⚡ SCRIPT POUR LA DATE PAR DÉFAUT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Définir la date par défaut à +7 jours
+            var dateInput = document.getElementById('date_disponibilite');
+            if (dateInput && !dateInput.value) {
+                var date = new Date();
+                date.setDate(date.getDate() + 7);
+                var year = date.getFullYear();
+                var month = String(date.getMonth() + 1).padStart(2, '0');
+                var day = String(date.getDate()).padStart(2, '0');
+                dateInput.value = year + '-' + month + '-' + day;
+            }
+        });
+    </script>
+</body>
+</html>

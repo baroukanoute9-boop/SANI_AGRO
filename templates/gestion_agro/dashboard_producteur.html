@@ -1,0 +1,280 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANI-AGRO - Espace Producteur</title>
+    <script src="https://tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-[#f4f7f5] text-gray-800 antialiased min-h-screen flex">
+
+    <!-- 1. BARRE LATÉRALE DE NAVIGATION (SIDEBAR) -->
+    <aside class="w-64 bg-white border-r border-gray-100 flex flex-col justify-between p-5 fixed h-full z-20">
+        <div>
+            <!-- Header Logo SANI-AGRO -->
+            <div class="flex items-center space-x-2.5 mb-6 px-2">
+                <div class="w-9 h-9 bg-[#2e7d32] text-white rounded-xl flex items-center justify-center font-black text-lg shadow-md shadow-green-700/20">S</div>
+                <div>
+                    <h1 class="text-base font-extrabold tracking-tight text-gray-900 leading-none">SANI-AGRO</h1>
+                    <p class="text-[9px] text-[#2e7d32] font-semibold mt-0.5">Agriculture Interconnectée</p>
+                </div>
+            </div>
+            
+            <!-- Menu interactif -->
+            <nav class="space-y-5">
+                <button onclick="switchTab('vue-generale')" class="w-full flex items-center gap-3 bg-[#2e7d32] text-white font-bold py-2.5 px-4 rounded-xl shadow-lg shadow-green-700/15 text-sm text-left transition">
+                    <i class="fa-solid fa-house-chimney"></i> <span>Tableau de bord</span>
+                </button>
+
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-3 mb-2">Produits</p>
+                    <div class="space-y-1">
+                        <button onclick="switchTab('mes-produits')" class="w-full flex items-center gap-3 text-gray-600 hover:bg-[#f4f7f5] hover:text-[#2e7d32] py-2 px-3 rounded-lg text-xs font-semibold text-left transition"><i class="fa-solid fa-basket-shopping text-gray-400"></i> Mes produits</button>
+                        <button onclick="switchTab('ajouter-produit')" class="w-full flex items-center gap-3 text-gray-600 hover:bg-[#f4f7f5] hover:text-[#2e7d32] py-2 px-3 rounded-lg text-xs font-semibold text-left transition"><i class="fa-solid fa-circle-plus text-gray-400"></i> Ajouter un produit</button>
+                        <button onclick="switchTab('mes-stocks')" class="w-full flex items-center gap-3 text-gray-600 hover:bg-[#f4f7f5] hover:text-[#2e7d32] py-2 px-3 rounded-lg text-xs font-semibold text-left transition"><i class="fa-solid fa-cubes text-gray-400"></i> Mes stocks</button>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-3 mb-2">Ventes & Suivi</p>
+                    <div class="space-y-1">
+                        <button onclick="switchTab('commandes-recues')" class="w-full flex items-center gap-3 text-gray-600 hover:bg-[#f4f7f5] hover:text-[#2e7d32] py-2 px-3 rounded-lg text-xs font-semibold text-left transition"><i class="fa-solid fa-receipt text-gray-400"></i> Commandes reçues</button>
+                        <button onclick="switchTab('historique-ventes')" class="w-full flex items-center gap-3 text-gray-600 hover:bg-[#f4f7f5] hover:text-[#2e7d32] py-2 px-3 rounded-lg text-xs font-semibold text-left transition"><i class="fa-solid fa-clock-rotate-left text-gray-400"></i> Historique des ventes</button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="bg-[#1b5e20] text-white rounded-2xl p-4 text-center mt-4 shadow-sm">
+            <p class="text-xs font-bold mb-1">Besoin d'aide ?</p>
+            <a href="#" class="block bg-white text-[#1b5e20] text-xs font-bold py-1.5 rounded-xl mt-2 hover:bg-gray-50 transition">Contactez-nous</a>
+        </div>
+    </aside>
+
+    <!-- 2. PANNEAU DE CONTENU PRINCIPAL -->
+    <main class="flex-grow pl-64 min-h-screen flex flex-col">
+        <header class="h-14 bg-white border-b border-gray-100 px-8 flex items-center justify-between sticky top-0 z-10">
+            <div class="text-xs font-semibold text-gray-400">Espace de travail connecté</div>
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 bg-emerald-700 text-white rounded-full flex items-center justify-center text-xs font-bold">P</div>
+                <span class="text-xs font-bold text-gray-700">Producteur à Kati, Bamako</span>
+            </div>
+        </header>
+
+        <div class="p-6 space-y-6">
+            
+            <!-- Messages d'alertes succès ou erreur de Django -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="p-4 rounded-xl {% if message.tags == 'success' %}bg-green-100 text-green-800{% else %}bg-orange-100 text-orange-800{% endif %} font-bold text-xs shadow-sm mb-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- ================= ONTLET 1 : VUE GENERALE ================= -->
+            <div id="vue-generale" class="tab-content space-y-6">
+                <!-- Zone Bamako stylisée graphique -->
+                <div class="bg-gradient-to-r from-emerald-800 to-green-700 rounded-2xl p-6 text-white flex justify-between items-center shadow-md">
+                    <div>
+                        <h2 class="text-2xl font-extrabold mb-1">Bonjour, Producteur !</h2>
+                        <p class="text-green-100 text-xs">Gérer vos produits, vos stocks et vos ventes en toute simplicité.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md border border-white/10 p-3 rounded-xl text-center hidden md:block">
+                        <p class="text-[9px] font-bold text-green-300 uppercase tracking-wider">Zone de Production</p>
+                        <p class="text-sm font-black tracking-tight">MARCHÉS DE BAMAKO (DISTRICT)</p>
+                    </div>
+                </div>
+
+                <!-- Les 4 cartes de statistiques demandées (MCD Synchronisé) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Produits en vente</p><p class="text-2xl font-black text-gray-800">{{ total_produits|default:"0" }}</p></div>
+                        <div class="w-10 h-10 bg-green-50 text-[#2e7d32] rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-wheat-awn"></i></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Stocks disponibles</p><p class="text-2xl font-black text-gray-800">{{ stock_total|default:"0" }} kg</p></div>
+                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-cubes"></i></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Commandes reçues</p><p class="text-2xl font-black text-gray-800">{{ commandes_attente|default:"0" }}</p></div>
+                        <div class="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-file-invoice"></i></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Ventes ce mois</p><p class="text-2xl font-black text-gray-800">{{ revenus|default:"0" }} FCFA</p></div>
+                        <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-wallet"></i></div>
+                    </div>
+                </div>
+
+                <!-- ALERTES DE SÉCURITÉ DE STOCK ET PÉREMPTION -->
+                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-3">
+                    <h3 class="font-extrabold text-xs text-gray-800"><i class="fa-solid fa-bell text-red-500 mr-1.5"></i>Alertes de contrôle automatiques</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {% for p in mes_produits %}
+                            {% if p.alerte_stock %}
+                                <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-triangle-exclamation text-[#d97706] text-base"></i>
+                                    <p>Stock faible pour <strong>{{ p.nom_produit }}</strong> ({{ p.quantite_dispo }} kg restants). Pensez à réapprovisionner.</p>
+                                </div>
+                            {% endif %}
+                            {% if p.alerte_peremption == "Proche" or p.alerte_peremption == "Expiré" %}
+<!-- ================= ONGLET 2 : MES PRODUITS ================= -->
+            <div id="mes-produits" class="tab-content hidden bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-extrabold text-sm text-gray-800">Mes produits publiés</h3>
+                    <button onclick="switchTab('ajouter-produit')" class="bg-[#2e7d32] text-white font-bold text-xs py-2 px-3 rounded-lg"><i class="fa-solid fa-plus mr-1"></i> Ajouter</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                <th class="pb-2.5">Produit</th>
+                                <th class="pb-2.5">Catégorie</th>
+                                <th class="pb-2.5">Quantité</th>
+                                <th class="pb-2.5">Prix</th>
+                                <th class="pb-2.5">Statut</th>
+                                <th class="pb-2.5 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50 text-xs font-semibold text-gray-700">
+                            {% for p in mes_produits %}
+                            <tr>
+                                <td class="py-3 font-bold text-gray-900">{{ p.nom_produit }}</td>
+                                <td class="py-3 text-gray-400">{{ p.categorie }}</td>
+                                <td class="py-3">{{ p.quantite_dispo }} kg</td>
+                                <td class="py-3 text-emerald-700 font-bold">{{ p.prix_unitaire }} FCFA/kg</td>
+                                <td class="py-3">
+                                    {% if p.alerte_stock %}
+                                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-50 text-red-600">En rupture</span>
+                                    {% else %}
+                                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-green-50 text-green-600">En vente</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3 text-center text-gray-400">
+                                    <a href="{% url 'supprimer_produit' p.id %}" class="hover:text-red-600" onclick="return confirm('Retirer ce produit ?')"><i class="fa-regular fa-trash-can"></i></a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="py-6 text-center text-gray-400">Aucun produit publié. Utilisez l'onglet Ajouter un produit.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ================= ONGLET 3 : AJOUTER PRODUIT ================= -->
+            <div id="ajouter-produit" class="tab-content hidden bg-white p-6 rounded-2xl border border-gray-100 shadow-sm max-w-xl mx-auto w-full">
+                <h3 class="font-extrabold text-sm text-[#2e7d32] mb-4"><i class="fa-solid fa-circle-plus mr-1.5"></i>Ajouter un nouveau produit</h3>
+                <form method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="ajouter_produit" value="1">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Nom du produit</label>
+                        <input type="text" name="nom_produit" class="w-full p-2.5 border border-gray-200 rounded-xl text-xs outline-none focus:border-[#2e7d32]" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Catégorie</label>
+                        <select name="categorie" class="w-full p-2.5 border border-gray-200 rounded-xl text-xs outline-none bg-white cursor-pointer" required>
+                            <option value="Légumes">Légumes</option>
+                            <option value="Céréales">Céréales</option>
+                            <option value="Fruits">Fruits</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Quantité disponible (kg)</label>
+                            <input type="number" name="quantite_dispo" class="w-full p-2.5 border border-gray-200 rounded-xl text-xs outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Prix de vente (FCFA/kg)</label>
+                            <input type="number" name="prix_unitaire" class="w-full p-2.5 border border-gray-200 rounded-xl text-xs outline-none" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Date limite de disponibilité</label>
+                        <input type="date" name="date_disponibilite" class="w-full p-2.5 border border-gray-200 rounded-xl text-xs outline-none" required>
+                    </div>
+                    <button type="submit" class="w-full bg-[#2e7d32] hover:bg-green-800 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition">Enregistrer et publier sur le marché</button>
+                </form>
+            </div>
+
+            <!-- ================= ONGLET 4 : MES STOCKS ================= -->
+            <div id="mes-stocks" class="tab-content hidden bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <h3 class="font-extrabold text-sm text-gray-800 mb-4">Mes volumes de stockage restants</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {% for p in mes_produits %}
+                    <div class="p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+                        <p class="font-bold text-gray-800 text-sm">{{ p.nom_produit }}</p>
+                        <p class="text-xl font-black text-[#2e7d32] mt-1">{{ p.quantite_dispo }} kg restants</p>
+                    </div>
+                    {% empty %}
+                    <div class="col-span-3 text-center text-gray-400 py-4">Aucun stock disponible actuellement.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ================= ONGLET 5 : COMMANDES REÇUES ================= -->
+            <div id="commandes-recues" class="tab-content hidden bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <h3 class="font-extrabold text-sm text-gray-800 mb-4">Traitement des demandes commerçants</h3>
+                <div class="space-y-3">
+                    {% for c in commandes %}
+                        {% if c.statut_flux == 'EN_ATTENTE' %}
+                        <div class="p-4 bg-orange-50/30 border border-orange-100 rounded-xl flex justify-between items-center">
+                            <div>
+                                <p class="text-xs font-bold text-gray-800">Acheteur : {{ c.commercant.profil.nom }}</p>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Demande de {{ c.quantite_transporte }} kg pour son commerce</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="{% url 'traiter_commande' commande_id=c.id_reservation action='accepter' %}" class="bg-[#2e7d32] text-white font-bold text-[10px] py-1.5 px-3 rounded-lg shadow-sm">Accepter</a>
+                                <a href="{% url 'traiter_commande' commande_id=c.id_reservation action='refuser' %}" class="bg-red-50 text-red-600 font-bold text-[10px] py-1.5 px-3 rounded-lg border border-red-100">Refuser</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="text-center text-gray-400 py-4">Aucune commande en attente de validation.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ================= ONGLET 6 : HISTORIQUE DES VENTES ================= -->
+            <div id="historique-ventes" class="tab-content hidden bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <h3 class="font-extrabold text-sm text-gray-800 mb-4">Toutes les transactions passées</h3>
+                <div class="space-y-2">
+                    {% for c in commandes %}
+                        {% if c.statut_flux == 'VALIDEE' or c.statut_flux == 'ANNULEE' %}
+                        <div class="p-4 border border-gray-100 rounded-xl flex justify-between items-center {% if c.statut_flux == 'VALIDEE' %}bg-green-50/20 border-green-100{% endif %}">
+                            <div>
+                                <p class="text-xs font-bold text-gray-800">{{ c.quantite_transporte }} kg de {{ c.produit.nom_produit }} avec {{ c.commercant.profil.nom }}</p>
+                                <p class="text-[10px] text-gray-400 mt-1">Date d'envoi : {{ c.date_envoi }}</p>
+                            </div>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold {% if c.statut_flux == 'VALIDEE' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-600{% endif %}">{{ c.get_statut_flux_display }}</span>
+                        </div>
+
+                <!-- ALERTES DE SÉCURITÉ DE STOCK ET PÉREMPTION (BLOC CORRIGÉ) -->
+                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-3">
+                    <h3 class="font-extrabold text-xs text-gray-800"><i class="fa-solid fa-bell text-red-500 mr-1.5"></i>Alertes de contrôle automatiques</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {% for p in mes_produits %}
+                            {% if p.alerte_stock %}
+                                <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-triangle-exclamation text-[#d97706] text-base"></i>
+                                    <p>Stock faible pour <strong>{{ p.nom_produit }}</strong> ({{ p.quantite_dispo }} kg restants). Pensez à réapprovisionner.</p>
+                                </div>
+                            {% endif %}
+                            
+                            {% if p.alerte_peremption == "Proche" or p.alerte_peremption == "Expiré" %}
+                                <div class="p-3 bg-red-50 border border-red-200 rounded-xl text-[11px] text-red-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-clock text-red-600 text-base"></i>
+                                    <p>Alerte date de péremption ! Le lot de <strong>{{ p.nom_produit }}</strong> arrive à expiration (Date : {{ p.date_disponibilite }}).</p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div> <!-- Fermeture de l'onglet vue-generale →
+
+

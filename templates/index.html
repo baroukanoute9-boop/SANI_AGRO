@@ -1,0 +1,386 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANI_AGRO - Accueil</title>
+    
+    <!-- CDN FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* ===== STYLES GÉNÉRAUX ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* IMAGE DE FOND PLEINE PAGE */
+        body {
+            background-image: url("{% static 'image_fc2ea63b.png' %}"); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;  /* l'image reste fixe pendant le scroll */
+            position: relative;
+        }
+
+        /* Overlay sombre pour que le texte soit lisible par-dessus l'image */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.55);
+            z-index: -1;
+        }
+
+        /* Le contenu principal doit être au-dessus de l'overlay */
+        .navbar, .hero-section, .cta-section {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== BARRE DE NAVIGATION ===== */
+        .navbar {
+            background-color: #fff;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .nav-logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .logo-sani {
+            color: #22c55e;
+        }
+        .logo-agro {
+            color: #22c55e;
+        }
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .btn-connexion {
+            color: #22c55e;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .btn-connexion:hover {
+            color: #16a34a;
+        }
+        .btn-inscription {
+            background-color: #22c55e;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+        }
+        .btn-inscription:hover {
+            background-color: #ffffff;
+        }
+
+        /* ===== SECTION HERO ===== */
+        .hero-section {
+            position: relative;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .hero-text-container {
+            max-width: 800px;
+            color: #ffffff;
+            margin-bottom: 60px;
+        }
+        .hero-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+        .hero-subtitle {
+            font-size: 18px;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        /* ===== TROIS CARTES ===== */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            width: 100%;
+            position: absolute;
+            margin-top: 120px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 35px 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .card-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        .card-description {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 0 0 25px;
+            text-align: left;
+            width: 100%;
+            padding-left: 8px;
+        }
+        .feature-list li {
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .feature-list li i {
+            width: 18px;
+            color: #22c55e;
+            font-size: 14px;
+        }
+        
+        .card-button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: background-color 0.2s;
+            margin-top: auto;
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* Couleurs par carte */
+        .card-producteur { border-top: 8px solid #22c55e; }
+        .icon-producteur { background-color: #dcfce7; color: #22c55e; }
+        .title-producteur { color: #16a34a; }
+        .btn-producteur { background-color: #22c55e; color: white; }
+        .btn-producteur:hover { background-color: #16a34a; }
+
+        .card-commercant { border-top: 8px solid #f97316; }
+        .icon-commercant { background-color: #ffedd5; color: #f97316; }
+        .title-commercant { color: #ea580c; }
+        .btn-commercant { background-color: #f97316; color: white; }
+        .btn-commercant:hover { background-color: #ea580c; }
+
+        .card-transporteur { border-top: 8px solid #64748b; }
+        .icon-transporteur { background-color: #f1f5f9; color: #475569; }
+        .title-transporteur { color: #334155; }
+        .btn-transporteur { background-color: #64748b; color: white; }
+        .btn-transporteur:hover { background-color: #475569; }
+
+        /* Section appel à l'action */
+        .cta-section {
+            max-width: 500px;
+            margin: -140px auto 40px;
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 20px 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 10;
+        }
+        .cta-text {
+            font-size: 22px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+        .cta-button {
+            background-color: #22c55e;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .cta-button:hover {
+            background-color: #16a34a;
+        }
+
+        /* Espace pour gérer le chevauchement des cartes */
+        .spacer {
+            height: 200px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .hero-title { font-size: 28px; }
+            .cards-container { 
+                position: relative; 
+                bottom: -60; 
+                margin-top: 30px; 
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .spacer { height: 40px; }
+            .hero-section { min-height: 480px; }
+            .cta-section { margin: 60px 20px; padding: 30px 20px; }
+            .cta-text { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRE DE NAVIGATION -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-sani">SANI_</span><span class="logo-agro">AGRO</span>
+        </div>
+        <div class="nav-buttons">
+            <a href="{% url 'login_select' %}" class="btn-connexion">
+                <i class="fas fa-user-check" style="margin-right: 8px;"></i>Connexion
+            </a>
+            <a href="{% url 'register_select' %}" class="btn-inscription">
+                <i class="fas fa-user-plus" style="margin-right: 8px;"></i>Inscription
+            </a>
+        </div>
+    </nav>
+
+    <!-- SECTION HERO -->
+    <div class="hero-section">
+        <div class="hero-text-container">
+           
+          
+            </p>
+        </div>
+
+        <!-- TROIS CARTES -->
+        <div class="cards-container">
+            
+            <!-- PRODUCTEUR -->
+            <div class="card card-producteur">
+                <div class="card-icon icon-producteur">
+                    <i class="fas fa-wheat-awn"></i>
+                </div>
+                <h3 class="card-title title-producteur">PRODUCTION</h3>
+                <p class="card-description">
+                    Vous êtes producteur ? Gérez vos produits, vos stocks et vendez facilement vos récoltes.
+                </p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Publier vos produits</li>
+                    <li><i class="fas fa-check-circle"></i> Gérer vos stocks</li>
+                    <li><i class="fas fa-check-circle"></i> Suivre vos commandes</li>
+                </ul>
+                <a href="{% url 'dashboard_producteur' %}" class="card-button btn-producteur">
+                    Accéder à l'espace Production &rarr;
+                </a>
+            </div>
+
+            <!-- COMMERÇANT -->
+            <div class="card card-commercant">
+                <div class="card-icon icon-commercant">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h3 class="card-title title-commercant">COMMERÇANT</h3>
+                <p class="card-description">
+                    Vous êtes commerçant ? Trouvez des produits de qualité et développez votre activité.
+                </p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Rechercher des produits</li>
+                    <li><i class="fas fa-check-circle"></i> Passer des commandes</li>
+                    <li><i class="fas fa-check-circle"></i> Suivre vos livraisons</li>
+                </ul>
+                <a href="{% url 'dashboard_commercant' %}" class="card-button btn-commercant">
+                    Accéder à l'espace Commerçant &rarr;
+                </a>
+            </div>
+
+            <!-- TRANSPORTEUR -->
+            <div class="card card-transporteur">
+                <div class="card-icon icon-transporteur">
+                    <i class="fas fa-truck-moving"></i>
+                </div>
+                <h3 class="card-title title-transporteur">TRANSPORTEUR</h3>
+                <p class="card-description">
+                    Vous êtes transporteur ? Trouvez des missions de transport et augmentez vos revenus.
+                </p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Voir les demandes de transport</li>
+                    <li><i class="fas fa-check-circle"></i> Accepter une mission</li>
+                    <li><i class="fas fa-check-circle"></i> Confirmer la livraison</li>
+                </ul>
+                <a href="{% url 'dashboard_transporteur' %}" class="card-button btn-transporteur">
+                    Accéder à l'espace Transporteur &rarr;
+                </a>
+            </div>
+
+        </div> <!-- fin cards-container -->
+    </div> <!-- fin hero-section -->
+
+    <div class="spacer"></div>
+
+    <!-- SECTION REJOIGNEZ-NOUS -->
+    <div class="cta-section">
+        <div class="cta-text">
+            <i class="fas fa-leaf" style="color: #22c55e; margin-right: 8px;"></i>
+            Rejoignez-nous dès aujourd'hui
+        </div>
+        <a href="marche" class="cta-button">
+            Commencer maintenant <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+        </a>
+    </div>
+
+</body>
+</html>

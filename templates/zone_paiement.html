@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SANI-AGRO - Passer au Règlement</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #e8f3ec;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container-payment {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px -12px rgba(15, 42, 26, 0.15);
+            width: 1020px;
+            max-width: 100%;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            overflow: hidden;
+            border: 1px solid rgba(76, 175, 132, 0.12);
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 🛒 VOLET GAUCHE */
+        .left-panel {
+            padding: 40px 44px 44px;
+            border-right: 1px solid rgba(76, 175, 132, 0.10);
+            background: #ffffff;
+        }
+
+        .left-panel h2 {
+            margin-top: 0;
+            color: #0f2a1a;
+            border-bottom: 2px solid #e6f5ee;
+            padding-bottom: 14px;
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .left-panel h2 i {
+            color: #2b8c5e;
+        }
+
+        .left-panel h2:not(:first-of-type) {
+            margin-top: 28px;
+        }
+
+        /* 🖼️ IMAGE PRODUIT RÉDUITE */
+        .product-pay-img {
+            width: 100%;
+            height: 140px;
+            /* ⬅️ RÉDUITE de 180px à 140px */
+            object-fit: cover;
+            border-radius: 14px;
+            border: 2px solid #d9eee0;
+            margin-bottom: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-pay-img:hover {
+            transform: scale(1.02);
+        }
+
+        .product-placeholder {
+            height: 140px;
+            /* ⬅️ RÉDUITE de 180px à 140px */
+            background: #eef6f1;
+            border: 2px dashed #c5e0d0;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9abbab;
+            margin-bottom: 18px;
+            font-size: 14px;
+            font-weight: 500;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .product-placeholder i {
+            font-size: 35px;
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #4f6b6b;
+            margin-bottom: 8px;
+            padding: 4px 0;
+        }
+
+        .meta-row i {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .meta-row i.fa-leaf {
+            color: #2b8c5e;
+        }
+        .meta-row i.fa-user-wheat {
+            color: #b89a6a;
+        }
+        .meta-row i.fa-weight-hanging {
+            color: #5a7a6a;
+        }
+
+        .meta-row strong {
+            color: #0f2a1a;
+            font-weight: 600;
+        }
+
+        /* 🚚 OPTIONS DE TRANSPORT */
+        .transport-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .transport-card {
+            border: 2px solid rgba(76, 175, 132, 0.15);
+            padding: 14px 18px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: all 0.3s ease;
+            background: #f8fbf9;
+        }
+
+        .transport-card:hover {
+            border-color: #2b8c5e;
+            background: #eef6f1;
+            transform: translateX(4px);
+        }
+
+        .transport-card input[type="radio"] {
+            margin-top: 4px;
+            accent-color: #2b8c5e;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .transport-card:has(input:checked) {
+            border-color: #2b8c5e;
+            background: #e6f5ee;
+            box-shadow: 0 0 0 4px rgba(43, 140, 94, 0.08);
+        }
+
+        .transport-card .transport-title {
+            font-weight: 600;
+            color: #0f2a1a;
+            font-size: 14px;
+        }
+
+        .transport-card .transport-desc {
+            font-size: 12px;
+            color: #5a7a6a;
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+
+        .transport-card .transport-icon {
+            color: #2b8c5e;
+            font-size: 18px;
+            margin-right: 4px;
+        }
+
+        /* 📱 VOLET DROIT - PAIEMENT */
+        .right-panel {
+            padding: 40px 44px 44px;
+            background: #eef6f1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .payment-summary {
+            text-align: center;
+            background: #ffffff;
+            padding: 18px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(76, 175, 132, 0.10);
+            margin-bottom: 28px;
+            box-shadow: 0 4px 12px rgba(15, 42, 26, 0.02);
+        }
+
+        .payment-summary .summary-label {
+            font-size: 12px;
+            color: #6a8a7a;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .payment-summary .summary-amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a7a4a;
+            margin-top: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .payment-summary .summary-amount span {
+            font-size: 16px;
+            font-weight: 400;
+            color: #6a8a7a;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #3d5e4e;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .form-label i {
+            margin-right: 6px;
+            color: #5a7a6a;
+        }
+
+        /* 📱 OPÉRATEURS MOBILE MONEY */
+        .operator-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 12px 0 18px;
+        }
+
+        .operator-box {
+            border: 2px solid rgba(76, 175, 132, 0.15);
+            padding: 14px 12px;
+            border-radius: 14px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .operator-box:hover {
+            border-color: #2b8c5e;
+            background: #eef6f1;
+            transform: translateY(-2px);
+        }
+
+        .operator-box:has(input:checked) {
+            border-color: #2b8c5e;
+            background: #e6f5ee;
+            box-shadow: 0 0 0 4px rgba(43, 140, 94, 0.08);
+        }
+
+        .operator-box input[type="radio"] {
+            accent-color: #2b8c5e;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .operator-box.orange {
+            color: #cc7a2a;
+        }
+        .operator-box.orange i {
+            color: #f97316;
+        }
+        .operator-box.moov {
+            color: #1a6a8a;
+        }
+        .operator-box.moov i {
+            color: #0284c7;
+        }
+
+        /* 📝 CHAMPS DE SAISIE */
+        .input-phone {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(76, 175, 132, 0.15);
+            border-radius: 14px;
+            font-size: 15px;
+            outline: none;
+            margin-bottom: 18px;
+            box-sizing: border-box;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            transition: all 0.3s ease;
+            color: #1a3a2a;
+        }
+
+        .input-phone:focus {
+            border-color: #2b8c5e;
+            box-shadow: 0 0 0 4px rgba(43, 140, 94, 0.10);
+        }
+
+        .input-phone::placeholder {
+            color: #9abbab;
+            font-weight: 400;
+        }
+
+        .input-group-otp {
+            position: relative;
+        }
+
+        .input-group-otp .otp-hint {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: #8aaa9a;
+            font-weight: 500;
+            background: #eef6f1;
+            padding: 2px 12px;
+            border-radius: 30px;
+            pointer-events: none;
+        }
+
+        /* 🔘 BOUTON DE PAIEMENT */
+        .btn-pay {
+            background: #2b8c5e;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 60px;
+            font-size: 15px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 20px rgba(43, 140, 94, 0.25);
+            letter-spacing: 0.2px;
+            margin-top: 4px;
+        }
+
+        .btn-pay:hover {
+            background: #1f724b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(43, 140, 94, 0.35);
+        }
+
+        .btn-pay:active {
+            transform: scale(0.98);
+        }
+
+        .btn-pay i {
+            font-size: 16px;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #8aaa9a;
+            font-weight: 500;
+        }
+
+        .security-badge i {
+            color: #2b8c5e;
+        }
+
+        /* 📱 RESPONSIVE */
+        @media (max-width: 820px) {
+            .container-payment {
+                grid-template-columns: 1fr;
+                border-radius: 24px;
+            }
+            .left-panel {
+                border-right: none;
+                border-bottom: 1px solid rgba(76, 175, 132, 0.10);
+                padding: 28px 24px;
+            }
+            .right-panel {
+                padding: 28px 24px 32px;
+            }
+            .payment-summary .summary-amount {
+                font-size: 28px;
+            }
+            .operator-group {
+                grid-template-columns: 1fr 1fr;
+            }
+            .product-pay-img {
+                height: 120px;
+            }
+            .product-placeholder {
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 12px;
+            }
+            .left-panel {
+                padding: 20px 16px;
+            }
+            .right-panel {
+                padding: 20px 16px 24px;
+            }
+            .left-panel h2 {
+                font-size: 15px;
+            }
+            .operator-group {
+                grid-template-columns: 1fr;
+            }
+            .payment-summary .summary-amount {
+                font-size: 24px;
+            }
+            .btn-pay {
+                font-size: 14px;
+                padding: 14px 20px;
+            }
+            .transport-card {
+                padding: 12px 14px;
+            }
+            .product-pay-img {
+                height: 100px;
+            }
+            .product-placeholder {
+                height: 100px;
+            }
+            .product-placeholder i {
+                font-size: 28px;
+            }
+            .transport-card .transport-desc {
+                font-size: 11px;
+            }
+        }
+
+        /* Tooltip info */
+        .info-tip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #8aaa9a;
+            font-size: 12px;
+            cursor: help;
+        }
+
+        .info-tip i {
+            color: #7a9a8a;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🌐 LE FORMULAIRE GLOBAL POST UNIQUE ENGLOBANT TOUT LE CIRCUIT SÉCURISÉ -->
+    <form method="POST" action="" class="container-payment">
+        {% csrf_token %}
+
+        <!-- 🛒 VOLET GAUCHE : IDENTIFICATION DU PRODUIT ET SELECTION TRANSPORT -->
+        <div class="left-panel">
+            <h2>
+                <i class="fa-regular fa-receipt"></i>
+                Récapitulatif du Lot
+            </h2>
+
+            {% if produit.image_produit %}
+                <img src="{{ produit.image_produit.url }}" class="product-pay-img" alt="Photo Denrée">
+            {% else %}
+                <div class="product-placeholder">
+                    <i class="fa-regular fa-image"></i>
+                    Aucun visuel disponible
+                </div>
+            {% endif %}
+
+            <div class="meta-row">
+                <i class="fa-regular fa-seedling"></i>
+                Produit agricole : <strong>{{ produit.nom_produit }}</strong>
+            </div>
+            <div class="meta-row">
+                <i class="fa-regular fa-user"></i>
+                Producteur émetteur : <strong>{{ produit.producteur.profil.nom|capfirst }}</strong>
+            </div>
+            <div class="meta-row">
+                <i class="fa-regular fa-weight-scale"></i>
+                Volume de la commande : <strong>{{ flux.quantite }} kg</strong>
+            </div>
+
+            <h2>
+                <i class="fa-regular fa-truck"></i>
+                Options de Logistique
+            </h2>
+
+            <div class="transport-options">
+                <!-- Option A : Retrait Direct -->
+                <label class="transport-card">
+                    <input type="radio" name="mode_transport" value="self">
+                    <div>
+                        <div class="transport-title">
+                            <i class="fa-regular fa-hand-peace transport-icon"></i>
+                            Retrait direct par mon propre véhicule
+                        </div>
+                        <div class="transport-desc">
+                            Je prends en charge la collecte moi-même chez le paysan. Le fret est clôturé au paiement.
+                        </div>
+                    </div>
+                </label>
+
+                <!-- Option B : Réseau de livraison du site -->
+                <label class="transport-card">
+                    <input type="radio" name="mode_transport" value="site" checked>
+                    <div>
+                        <div class="transport-title">
+                            <i class="fa-regular fa-truck-fast transport-icon"></i>
+                            Déléguer la livraison au réseau SANI-AGRO
+                        </div>
+                        <div class="transport-desc">
+                            Ouvre instantanément les appels d'offres techniques et financiers pour les transporteurs du Mali.
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- 📱 VOLET DROITE : FACTURATION FINANCIÈRE ET LIQUIDATION MOBILE MONEY -->
+        <div class="right-panel">
+            <div class="payment-summary">
+                <div class="summary-label">
+                    <i class="fa-regular fa-receipt"></i> Montant Global de la Facture
+                </div>
+                <div class="summary-amount">
+                    {{ montant }} <span>FCFA</span>
+                </div>
+            </div>
+
+            <label class="form-label">
+                <i class="fa-regular fa-mobile"></i> Opérateur Mobile Money
+            </label>
+            <div class="operator-group">
+                <label class="operator-box orange">
+                    <input type="radio" name="methode" value="Orange Money" checked>
+                    <i class="fa-solid fa-circle"></i> Orange Money
+                </label>
+                <label class="operator-box moov">
+                    <input type="radio" name="methode" value="Moov Money">
+                    <i class="fa-solid fa-circle"></i> Moov Money
+                </label>
+            </div>
+
+            <label class="form-label" for="phone">
+                <i class="fa-regular fa-phone"></i> Numéro de compte mobile
+            </label>
+            <input type="text" id="phone" name="phone" placeholder="Ex: +223 70 00 00 00" required class="input-phone">
+
+            <button type="submit" class="btn-pay">
+                <i class="fa-regular fa-lock"></i>
+                Valider mon paiement sécurisé
+                <i class="fa-regular fa-arrow-right"></i>
+            </button>
+
+            <div class="security-badge">
+                <i class="fa-regular fa-shield-check"></i>
+                Paiement sécurisé SSL • Données cryptées
+                <i class="fa-regular fa-circle-check"></i>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

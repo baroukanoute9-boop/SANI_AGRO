@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANI_AGRO</title>
+    <!-- Intégration de Tailwind CSS via CDN pour le design -->
+    <script src="https://tailwindcss.com"></script>
+    <!-- Intégration de FontAwesome pour les logos/icônes -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- BARRE DE NAVIGATION (NAVBAR) -->
+    <nav class="bg-slate-900 shadow-md py-4 px-6 md:px-12 flex justify-between items-center">
+        <!-- Logo tout à gauche -->
+        <div class="text-2xl font-bold tracking-wider">
+            <span class="text-green-500">SANI_</span><span class="text-white">AGRO</span>
+        </div>
+
+        <!-- Boutons de connexion à droite -->
+        <div class="flex items-center space-x-4">
+            <!-- Bouton Connexion textuel -->
+            <a href="{% url 'login_select' %}" class="text-white hover:text-green-400 font-medium transition duration-200">
+                <i class="fa-solid fa-user-check mr-2"></i>Connexion
+            </a>
+            <!-- Bouton Inscription Blanc -->
+            <a href="{% url 'register_select' %}" class="bg-white text-slate-900 px-5 py-2 rounded-lg font-semibold shadow hover:bg-gray-100 transition duration-200">
+                <i class="fa-solid fa-user-plus mr-2"></i>Inscription
+            </a>
+        </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL DE LA PAGE -->
+    <main class="flex-grow">
+        {% block content %}
+        <!-- Le contenu de la page index va s'insérer ici -->
+        {% endblock content %}
+    </main>
+
+</body>
+</html>
+
+
